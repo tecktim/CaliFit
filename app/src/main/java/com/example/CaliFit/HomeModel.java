@@ -1,6 +1,6 @@
 package com.example.CaliFit;
 
-public class CounterModel {
+public class HomeModel {
     private int counter;
     void CounterModel() {
         counter = 0;

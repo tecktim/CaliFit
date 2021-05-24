@@ -1,27 +1,27 @@
 package com.example.CaliFit;
 
 public class HomeActivityPresenter {
-    private CounterModel counterModel;
+    private HomeModel homeModel;
     private ViewInterface viewInterface;
 
     public HomeActivityPresenter(ViewInterface viewInterface) {
-        this.counterModel = new CounterModel();
+        this.homeModel = new HomeModel();
         this.viewInterface = viewInterface;
     }
     public void incrementCounter(){
-        counterModel.modifyCounter(1);
-        viewInterface.updateCounter(counterModel.getCounter());
+        homeModel.modifyCounter(1);
+        viewInterface.updateCounter(homeModel.getCounter());
     }
     public void decrementCounter(){
-        counterModel.modifyCounter(-1);
-        viewInterface.updateCounter(counterModel.getCounter());
+        homeModel.modifyCounter(-1);
+        viewInterface.updateCounter(homeModel.getCounter());
     }
     public void resetCounter(){
-        counterModel.resetCounter();
-        viewInterface.updateCounter(counterModel.getCounter());
+        homeModel.resetCounter();
+        viewInterface.updateCounter(homeModel.getCounter());
     }
     public int getCounter(){
-        return counterModel.getCounter();
+        return homeModel.getCounter();
     }
 
     public interface ViewInterface{
