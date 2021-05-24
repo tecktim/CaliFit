@@ -9,32 +9,77 @@
     tools:showIn="@layout/activity_home">
 
     <Button
-        android:id="@+id/buttonCounterUp"
+        android:id="@+id/addWorkoutOne"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
         android:onClick="countUpClicked"
-        android:text="Count up!"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="8dp" />
+        android:text="@string/add_workout"
+        app:layout_constraintBottom_toTopOf="@+id/addWorkoutTwo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/namePreview" />
 
     <TextView
-        android:id="@+id/countTextView"
+        android:id="@+id/namePreview"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        android:textSize="24sp"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCounterDown"
-        tools:layout_editor_absoluteX="8dp" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/app_title_mainMenu"
+        android:textAlignment="center"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toTopOf="@+id/addWorkoutOne"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonCounterDown"
+        android:id="@+id/addWorkoutTwo"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
         android:onClick="countDownClicked"
-        android:text="Count Down!"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCounterUp"
-        tools:layout_editor_absoluteX="8dp" />
+        android:text="@string/add_workout"
+        app:layout_constraintBottom_toTopOf="@+id/addWorkoutThree"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addWorkoutOne" />
+
+    <Button
+        android:id="@+id/addWorkoutThree"
+        android:layout_width="395dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="307dp"
+        android:onClick="countDownClicked"
+        android:text="@string/add_workout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addWorkoutTwo" />
+
+    <Button
+        android:id="@+id/aboutButton"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/app_name_about"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addWorkoutThree" />
 </android.support.constraint.ConstraintLayout>

@@ -1,5 +1,7 @@
 package com.example.CaliFit;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class HomeActivity extends AppCompatActivity implements HomeActivityPresenter.ViewInterface {
@@ -22,17 +25,15 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Button aboutButton = findViewById(R.id.aboutButton);
+        aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                homeActivityPresenter.resetCounter();
-                Snackbar.make(view, "Counter Reset", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                openAboutIntent();
             }
         });
         homeActivityPresenter  = new HomeActivityPresenter(this);
-        TextView text = (TextView) findViewById(R.id.countTextView);
+        TextView text = (TextView) findViewById(R.id.namePreview);
         text.setText("Counter: " + homeActivityPresenter.getCounter());
     }
 
@@ -44,9 +45,15 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
         homeActivityPresenter.decrementCounter();
     }
 
+    public void openAboutIntent() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/tecktim/CaliFit"));
+        startActivity(browserIntent);
+    }
+
     @Override
     public void updateCounter(int nCounter) {
-        TextView text = (TextView) findViewById(R.id.countTextView);
+        TextView text = (TextView) findViewById(R.id.namePreview);
         text.setText("Counter: " + nCounter);
         // text.setText("Counter: " + mainActivityPresenter.getCounter());
     }

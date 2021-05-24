@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CaliFit</string>
-    <string name="action_settings">No Settings</string>
+    <string name="app_name_about">About CaliFit</string>
+    <string name="app_title_mainMenu">Main Menu</string>
+    <string name="action_settings">Settings</string>
+    <string name="add_workout">Add Workout</string>
 </resources>

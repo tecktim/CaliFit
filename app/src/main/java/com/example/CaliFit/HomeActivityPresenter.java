@@ -8,6 +8,7 @@ public class HomeActivityPresenter {
         this.homeModel = new HomeModel();
         this.viewInterface = viewInterface;
     }
+
     public void incrementCounter(){
         homeModel.modifyCounter(1);
         viewInterface.updateCounter(homeModel.getCounter());
