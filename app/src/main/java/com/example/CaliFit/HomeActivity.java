@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 public class HomeActivity extends AppCompatActivity implements HomeActivityPresenter.ViewInterface {
 
+    //Dev branch init
     HomeActivityPresenter homeActivityPresenter;
 
     @Override
