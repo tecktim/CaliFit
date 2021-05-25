@@ -35,6 +35,15 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
         homeActivityPresenter  = new HomeActivityPresenter(this);
         TextView text = (TextView) findViewById(R.id.namePreview);
         text.setText("Counter: " + homeActivityPresenter.getCounter());
+
+        Button addWorkoutOne = findViewById(R.id.addWorkoutOne);
+        addWorkoutOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void countUpClicked(View view) {
