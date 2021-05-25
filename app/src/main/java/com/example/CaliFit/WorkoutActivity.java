@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class WorkoutActivity extends AppCompatActivity {
 
@@ -55,5 +56,9 @@ public class WorkoutActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Intent receivedIntent = getIntent();
+        TextView namePreviewWorkout = (TextView) findViewById(R.id.namePreviewWorkout);
+        namePreviewWorkout.setText(receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT));
     }
 }

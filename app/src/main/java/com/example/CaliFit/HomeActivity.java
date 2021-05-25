@@ -38,6 +38,25 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
             @Override
             public void onClick(View v) {
                 Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Workout one");
+                startActivity(intent);
+            }
+        });
+        Button addWorkoutTwo = findViewById(R.id.addWorkoutTwo);
+        addWorkoutTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Workout two");
+                startActivity(intent);
+            }
+        });
+        Button addWorkoutThree = findViewById(R.id.addWorkoutThree);
+        addWorkoutThree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Workout three");
                 startActivity(intent);
             }
         });
