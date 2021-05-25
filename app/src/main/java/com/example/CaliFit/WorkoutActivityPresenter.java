@@ -1,11 +1,11 @@
 package com.example.CaliFit;
 
 public class WorkoutActivityPresenter {
-    private WorkoutModel workoutModel;
+    private Model model;
     private ViewInterface viewInterface;
 
     public WorkoutActivityPresenter(WorkoutActivityPresenter.ViewInterface viewInterface) {
-        this.workoutModel = new WorkoutModel();
+        this.model = new Model();
         this.viewInterface = viewInterface;
     }
 
