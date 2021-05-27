@@ -26,6 +26,8 @@ public class WorkoutActivityPresenter {
         System.out.println(model.PushList.get(0).name);
     }
 
+
+
     public String printName(Exercise.Category category, int i) {
         List<Exercise> listToPrint = this.model.getList(category);
         if(i > listToPrint.size()) {

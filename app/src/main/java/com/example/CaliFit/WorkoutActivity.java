@@ -5,9 +5,13 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -23,15 +27,13 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         workoutActivityPresenter  = new WorkoutActivityPresenter(this);
 
 
-
         Button pushButton = findViewById(R.id.push_button);
         pushButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.push_exercise));
-                intent.putExtra("modelParcel", workoutActivityPresenter.getModel());
+                intent.putExtra(Intent.EXTRA_TEXT, "Push");
                 startActivityForResult(intent, 1);
             }
         });
@@ -43,9 +45,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.pull_exercise));
-
-                startActivity(intent);
+                intent.putExtra(Intent.EXTRA_TEXT, "Pull");
+                startActivityForResult(intent, 2);
             }
         });
 
@@ -56,7 +57,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.legs_exercise));
+                intent.putExtra(Intent.EXTRA_TEXT, "Legs");
+                startActivityForResult(intent, 3);
             }
         });
 
@@ -67,8 +69,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.core_exercise));
-                startActivity(intent);
+                intent.putExtra(Intent.EXTRA_TEXT, "Core");
+                startActivityForResult(intent, 4);
             }
         });
 
@@ -77,20 +79,17 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent model) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent toReceive) {
         if (resultCode == RESULT_OK && requestCode == 1){
-            if(model.hasExtra("modelParcel")){
-                workoutActivityPresenter.setModel(model.<Model>getParcelableExtra("modelParcel"));
-            }
+            Exercise toAdd = (Exercise)toReceive.getSerializableExtra("Exercise");
+            workoutActivityPresenter.getModel().addListItem(toAdd);
         }
-        System.out.println();
     }
 
     @Override
     public void onRestart(){
         super.onRestart();
-        TextView pushView = findViewById(R.id.push_exercise_text);
-        //System.out.println(workoutActivityPresenter.getModel().PushList.get(0).name);
-
+        TextView pushExercise0 = findViewById(R.id.push_exercise_text);
+        pushExercise0.setText(workoutActivityPresenter.getModel().PushList.get(0).name);
     }
 }
