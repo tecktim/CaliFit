@@ -1,17 +1,19 @@
 package com.example.CaliFit;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class HomeActivity extends AppCompatActivity implements HomeActivityPresenter.ViewInterface {
 
+    //Dev branch init
     HomeActivityPresenter homeActivityPresenter;
 
     @Override
@@ -21,33 +23,49 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Button aboutButton = findViewById(R.id.aboutButton);
+        aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                homeActivityPresenter.resetCounter();
-                Snackbar.make(view, "Counter Reset", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                openAboutIntent();
             }
         });
         homeActivityPresenter  = new HomeActivityPresenter(this);
-        TextView text = (TextView) findViewById(R.id.countTextView);
-        text.setText("Counter: " + homeActivityPresenter.getCounter());
+        TextView text = (TextView) findViewById(R.id.namePreviewHome);
+
+        Button addWorkoutOne = findViewById(R.id.addWorkoutOne);
+        addWorkoutOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Workout one");
+                startActivity(intent);
+            }
+        });
+        Button addWorkoutTwo = findViewById(R.id.addWorkoutTwo);
+        addWorkoutTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Workout two");
+                startActivity(intent);
+            }
+        });
+        Button addWorkoutThree = findViewById(R.id.addWorkoutThree);
+        addWorkoutThree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Workout three");
+                startActivity(intent);
+            }
+        });
     }
 
-    public void countUpClicked(View view) {
-        homeActivityPresenter.incrementCounter();
-    }
-
-    public void countDownClicked(View view) {
-        homeActivityPresenter.decrementCounter();
-    }
-
-    @Override
-    public void updateCounter(int nCounter) {
-        TextView text = (TextView) findViewById(R.id.countTextView);
-        text.setText("Counter: " + nCounter);
-        // text.setText("Counter: " + mainActivityPresenter.getCounter());
+    public void openAboutIntent() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/tecktim/CaliFit"));
+        startActivity(browserIntent);
     }
 
     @Override
