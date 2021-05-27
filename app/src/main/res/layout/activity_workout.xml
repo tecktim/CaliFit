@@ -11,7 +11,7 @@
         android:layout_width="395dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="77dp"
         android:layout_marginEnd="8dp"
         android:text="@string/app_title_workout"
         android:textAlignment="center"
