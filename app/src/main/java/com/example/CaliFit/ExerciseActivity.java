@@ -6,13 +6,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 
 public class ExerciseActivity extends AppCompatActivity implements ExerciseActivityPresenter.ViewInterface{
-    Exercise thisExercise;
     ArrayList<Exercise> exercises = new ArrayList<>();
+    private int PushCounter;
+    private int PullCounter;
+    private int LegsCounter;
+    private int CoreCounter;
 
     ExerciseActivityPresenter exerciseActivityPresenter;
     @Override
@@ -25,7 +29,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
         TextView namePreviewExercise = (TextView) findViewById(R.id.namePreviewExercise);
         //Set the top name TextView to push/pull/legs/core
-        namePreviewExercise.setText(receivedIntent.getStringExtra(receivedIntent.EXTRA_TEXT + " Exercises"));
+        namePreviewExercise.setText(receivedIntent.getStringExtra(receivedIntent.EXTRA_TEXT));
 
 
         switch (receivedIntent.getStringExtra(receivedIntent.EXTRA_TEXT)){
@@ -36,30 +40,46 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 addButtonPushUpEasy.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Knee Push up", Exercise.Category.Push);
-                        exercises.add(thisExercise);
+                        if(PushCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise pushupeasy = new Exercise("Knee Push up", Exercise.Category.Push);
+                            exercises.add(pushupeasy);
+                            PushCounter++;
+                        }
                     }
                 });
                 Button addButtonPushUp = findViewById(R.id.exAdd2);
-                TextView textPushUp = findViewById(R.id.exDescription1);
+                TextView textPushUp = findViewById(R.id.exDescription2);
                 textPushUp.setText("PushUp text description");
                 addButtonPushUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Normal Push up", Exercise.Category.Push);
-                        exercises.add(thisExercise);
+                        if(PushCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise pushup = new Exercise("Normal Push up", Exercise.Category.Push);
+                            exercises.add(pushup);
+                            PushCounter++;
+                        }
                     }
                 });
                 Button addButtonPushUpArcher = findViewById(R.id.exAdd3);
-                TextView textPushUpArcher = findViewById(R.id.exDescription1);
+                TextView textPushUpArcher = findViewById(R.id.exDescription3);
                 textPushUpArcher.setText("PushUpArcher text description");
                 addButtonPushUpArcher.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Archer Push up", Exercise.Category.Push);
-                        exercises.add(thisExercise);
+                        if(PushCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise pushuparcher = new Exercise("Archer Push up", Exercise.Category.Push);
+                            exercises.add(pushuparcher);
+                            PushCounter++;
+                        }
                     }
                 });
+                return;
 
             case "Pull":
                 Button addButtonTableRow = findViewById(R.id.exAdd1);
@@ -68,31 +88,46 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 addButtonTableRow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Table/Chair Row", Exercise.Category.Pull);
-                        exercises.add(thisExercise);
+                        if(PullCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise tablerow = new Exercise("Table/Chair Row", Exercise.Category.Pull);
+                            exercises.add(tablerow);
+                            PullCounter++;
+                        }
                     }
                 });
                 Button addButtonTowelRow = findViewById(R.id.exAdd2);
-                TextView textTowelRow = findViewById(R.id.exDescription1);
+                TextView textTowelRow = findViewById(R.id.exDescription2);
                 textTowelRow.setText("TowelRow text description");
                 addButtonTowelRow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Towel Row", Exercise.Category.Pull);
-                        exercises.add(thisExercise);
+                        if(PullCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise towerrow = new Exercise("Towel Row", Exercise.Category.Pull);
+                            exercises.add(towerrow);
+                            PullCounter++;
+                        }
                     }
                 });
                 Button addButtonSuperman = findViewById(R.id.exAdd3);
-                TextView textSuperman = findViewById(R.id.exDescription1);
+                TextView textSuperman = findViewById(R.id.exDescription3);
                 textSuperman.setText("Superman text description");
                 addButtonSuperman.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Supermans", Exercise.Category.Pull);
-                        exercises.add(thisExercise);
+                        if(PullCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise supermans = new Exercise("Supermans", Exercise.Category.Pull);
+                            exercises.add(supermans);
+                            PullCounter++;
+                        }
                     }
                 });
-
+                return;
             case "Legs":
                 Button addButtonSquat = findViewById(R.id.exAdd1);
                 TextView textSquat = findViewById(R.id.exDescription1);
@@ -100,8 +135,13 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 addButtonSquat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Table/Chair Row", Exercise.Category.Legs);
-                        exercises.add(thisExercise);
+                        if(LegsCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise squat = new Exercise("Squat", Exercise.Category.Legs);
+                            exercises.add(squat);
+                            LegsCounter++;
+                        }
                     }
                 });
                 Button addButtonLowSquat = findViewById(R.id.exAdd2);
@@ -110,8 +150,13 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 addButtonLowSquat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Towel Row", Exercise.Category.Legs);
-                        exercises.add(thisExercise);
+                        if(LegsCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise lowsquat = new Exercise("Low Squat", Exercise.Category.Legs);
+                            exercises.add(lowsquat);
+                            LegsCounter++;
+                        }
                     }
                 });
                 Button addButtonLunge = findViewById(R.id.exAdd3);
@@ -120,11 +165,16 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 addButtonLunge.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Supermans", Exercise.Category.Legs);
-                        exercises.add(thisExercise);
+                        if(LegsCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise lunge = new Exercise("Lunge", Exercise.Category.Legs);
+                            exercises.add(lunge);
+                            LegsCounter++;
+                        }
                     }
                 });
-
+                return;
             case "Core":
                 Button addButtonCrunch = findViewById(R.id.exAdd1);
                 TextView textCrunch = findViewById(R.id.exDescription1);
@@ -132,8 +182,13 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 addButtonCrunch.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Crunch", Exercise.Category.Core);
-                        exercises.add(thisExercise);
+                        if(CoreCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise crunch = new Exercise("Crunch", Exercise.Category.Core);
+                            exercises.add(crunch);
+                            CoreCounter++;
+                        }
                     }
                 });
                 Button addButtonLegRaise = findViewById(R.id.exAdd2);
@@ -142,8 +197,13 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 addButtonLegRaise.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("Leg Raises", Exercise.Category.Core);
-                        exercises.add(thisExercise);
+                        if(CoreCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise legraises = new Exercise("Leg Raises", Exercise.Category.Core);
+                            exercises.add(legraises);
+                            CoreCounter++;
+                        }
                     }
                 });
                 Button addButtonVUp = findViewById(R.id.exAdd3);
@@ -152,10 +212,16 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 addButtonVUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        thisExercise = new Exercise("V-Ups", Exercise.Category.Core);
-                        exercises.add(thisExercise);
+                        if(CoreCounter >= 3){
+                            Toast.makeText(ExerciseActivity.this, "Only 3 Exercises per Category", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Exercise vup = new Exercise("V-Ups", Exercise.Category.Core);
+                            exercises.add(vup);
+                            CoreCounter++;
+                        }
                     }
                 });
+                return;
         }
     }
 

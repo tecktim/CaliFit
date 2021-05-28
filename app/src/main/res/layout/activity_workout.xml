@@ -45,13 +45,13 @@
         android:layout_marginEnd="126dp"
         android:layout_marginBottom="4dp"
         android:text="@string/add_pull_exercise"
-        app:layout_constraintBottom_toTopOf="@+id/pull_exercise_text1"
+        app:layout_constraintBottom_toTopOf="@+id/pull_exercise_text4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/push_exercise_text3" />
 
     <TextView
-        android:id="@+id/pull_exercise_text1"
+        android:id="@+id/pull_exercise_text4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
@@ -60,14 +60,15 @@
         android:layout_marginBottom="4dp"
         android:text="@string/pull_exercise"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/pull_exercise_text2"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/pull_exercise_text5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pull_button"
         tools:visibility="invisible" />
 
     <TextView
-        android:id="@+id/pull_exercise_text2"
+        android:id="@+id/pull_exercise_text5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
@@ -76,14 +77,15 @@
         android:layout_marginBottom="4dp"
         android:text="@string/pull_exercise"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/pull_exercise_text3"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/pull_exercise_text6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pull_exercise_text1"
+        app:layout_constraintTop_toBottomOf="@+id/pull_exercise_text4"
         tools:visibility="invisible" />
 
     <TextView
-        android:id="@+id/pull_exercise_text3"
+        android:id="@+id/pull_exercise_text6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
@@ -92,10 +94,11 @@
         android:layout_marginBottom="8dp"
         android:text="@string/pull_exercise"
         android:textAlignment="center"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/legs_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pull_exercise_text2"
+        app:layout_constraintTop_toBottomOf="@+id/pull_exercise_text5"
         tools:visibility="invisible" />
 
     <Button
@@ -107,13 +110,13 @@
         android:layout_marginEnd="126dp"
         android:layout_marginBottom="4dp"
         android:text="@string/add_legs_exercise"
-        app:layout_constraintBottom_toTopOf="@+id/legs_exercise_text1"
+        app:layout_constraintBottom_toTopOf="@+id/legs_exercise_text10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pull_exercise_text3" />
+        app:layout_constraintTop_toBottomOf="@+id/pull_exercise_text6" />
 
     <TextView
-        android:id="@+id/core_exercise_text3"
+        android:id="@+id/core_exercise_text9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
@@ -122,14 +125,15 @@
         android:layout_marginBottom="4dp"
         android:text="@string/core_exercise"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/core_exercise_text2"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/core_exercise_text8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/core_exercise_text1"
+        app:layout_constraintTop_toBottomOf="@+id/core_exercise_text7"
         tools:visibility="invisible" />
 
     <TextView
-        android:id="@+id/core_exercise_text1"
+        android:id="@+id/core_exercise_text7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
@@ -138,14 +142,15 @@
         android:layout_marginBottom="4dp"
         android:text="@string/core_exercise"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/core_exercise_text3"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/core_exercise_text9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/core_button"
         tools:visibility="invisible" />
 
     <TextView
-        android:id="@+id/legs_exercise_text1"
+        android:id="@+id/legs_exercise_text10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
@@ -154,11 +159,12 @@
         android:layout_marginBottom="4dp"
         android:text="@string/legs_exercise"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/legs_exercise_text2"
+        app:layout_constraintBottom_toTopOf="@+id/legs_exercise_text11"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/legs_button"
-        tools:visibility="invisible" />
+        tools:visibility="invisible"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/core_button"
@@ -169,13 +175,13 @@
         android:layout_marginEnd="126dp"
         android:layout_marginBottom="4dp"
         android:text="@string/add_core_exercise"
-        app:layout_constraintBottom_toTopOf="@+id/core_exercise_text1"
+        app:layout_constraintBottom_toTopOf="@+id/core_exercise_text7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/legs_exercise_text3" />
+        app:layout_constraintTop_toBottomOf="@+id/legs_exercise_text12" />
 
     <TextView
-        android:id="@+id/legs_exercise_text3"
+        android:id="@+id/legs_exercise_text12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
@@ -184,14 +190,15 @@
         android:layout_marginBottom="8dp"
         android:text="@string/legs_exercise"
         android:textAlignment="center"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/core_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/legs_exercise_text2"
+        app:layout_constraintTop_toBottomOf="@+id/legs_exercise_text11"
         tools:visibility="invisible" />
 
     <TextView
-        android:id="@+id/core_exercise_text2"
+        android:id="@+id/core_exercise_text8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
@@ -200,14 +207,15 @@
         android:layout_marginBottom="74dp"
         android:text="@string/core_exercise"
         android:textAlignment="center"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/core_exercise_text3"
+        app:layout_constraintTop_toBottomOf="@+id/core_exercise_text9"
         tools:visibility="invisible" />
 
     <TextView
-        android:id="@+id/legs_exercise_text2"
+        android:id="@+id/legs_exercise_text11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
@@ -216,10 +224,11 @@
         android:layout_marginBottom="4dp"
         android:text="@string/legs_exercise"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/legs_exercise_text3"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/legs_exercise_text12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/legs_exercise_text1"
+        app:layout_constraintTop_toBottomOf="@+id/legs_exercise_text10"
         tools:visibility="invisible" />
 
     <TextView
@@ -232,6 +241,7 @@
         android:layout_marginBottom="4dp"
         android:text="@string/push_exercise"
         android:textAlignment="center"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/push_exercise_text2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -248,6 +258,7 @@
         android:layout_marginBottom="4dp"
         android:text="@string/push_exercise"
         android:textAlignment="center"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/push_exercise_text3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -264,6 +275,7 @@
         android:layout_marginBottom="8dp"
         android:text="@string/push_exercise"
         android:textAlignment="center"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/pull_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
