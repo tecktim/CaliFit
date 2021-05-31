@@ -3,13 +3,14 @@ package com.example.CaliFit;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class HomeActivity extends AppCompatActivity implements HomeActivityPresenter.ViewInterface {
 
@@ -20,9 +21,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         Button aboutButton = findViewById(R.id.aboutButton);
         aboutButton.setOnClickListener(new View.OnClickListener() {
@@ -33,6 +33,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
         });
         homeActivityPresenter  = new HomeActivityPresenter(this);
         TextView text = (TextView) findViewById(R.id.namePreviewHome);
+
+
 
         Button addWorkoutOne = findViewById(R.id.addWorkoutOne);
         addWorkoutOne.setOnClickListener(new View.OnClickListener() {

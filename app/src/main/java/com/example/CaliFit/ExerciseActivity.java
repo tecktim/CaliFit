@@ -1,12 +1,13 @@
 package com.example.CaliFit;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
@@ -218,6 +219,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                             Exercise vup = new Exercise("V-Ups", Exercise.Category.Core);
                             exercises.add(vup);
                             CoreCounter++;
+
                         }
                     }
                 });
@@ -227,8 +229,10 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
     @Override
     public void finish() {
+
         Intent toGive = new Intent();
         toGive.putExtra("Exercises", exercises);
+        System.out.println(exercises);
         setResult(RESULT_OK, toGive);
         super.finish();
     }

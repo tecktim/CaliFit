@@ -1,8 +1,5 @@
 package com.example.CaliFit;
 
-import android.widget.Button;
-import android.widget.TextView;
-
 import java.util.List;
 
 public class WorkoutActivityPresenter {

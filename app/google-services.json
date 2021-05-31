@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "890801178349",
+    "firebase_url": "https://califit-ac0e6-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "califit-ac0e6",
+    "storage_bucket": "califit-ac0e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890801178349:android:f03643569a327a478c6ee4",
+        "android_client_info": {
+          "package_name": "com.example.CaliFit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890801178349-haehshm91vqbb3r7897l05fdgpmkkaan.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBG10xJyzqzw9iA2KLa8Uy2mLX3kaGEkCg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "890801178349-haehshm91vqbb3r7897l05fdgpmkkaan.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
