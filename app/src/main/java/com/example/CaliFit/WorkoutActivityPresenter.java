@@ -28,7 +28,7 @@ public class WorkoutActivityPresenter {
     public String printName(Exercise.Category category, int i) {
         List<Exercise> listToPrint = this.model.getList(category);
         if(i > listToPrint.size()) {
-            return "Arschloch";
+            return "failed";
         }
         return listToPrint.get(i).name;
     }
