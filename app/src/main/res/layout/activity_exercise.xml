@@ -7,63 +7,6 @@
     tools:context=".ExerciseActivity">
 
     <TextView
-        android:id="@+id/exDescription3"
-        android:layout_width="249dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="427dp"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/exAdd3"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/exDescription2" />
-
-    <TextView
-        android:id="@+id/exDescription2"
-        android:layout_width="249dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/exDescription3"
-        app:layout_constraintEnd_toStartOf="@+id/exAdd2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/exDescription1" />
-
-    <Button
-        android:id="@+id/exAdd2"
-        android:layout_width="136dp"
-        android:layout_height="63dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/add"
-        app:layout_constraintBottom_toTopOf="@+id/exAdd3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/exDescription2"
-        app:layout_constraintTop_toBottomOf="@+id/exAdd1" />
-
-    <Button
-        android:id="@+id/exAdd3"
-        android:layout_width="136dp"
-        android:layout_height="63dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="430dp"
-        android:text="@string/add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/exDescription3"
-        app:layout_constraintTop_toBottomOf="@+id/exAdd2" />
-
-    <TextView
         android:id="@+id/namePreviewExercise"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
@@ -76,32 +19,57 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/exDescription1"
-        android:layout_width="249dp"
-        android:layout_height="wrap_content"
+    <ScrollView
+        android:id="@+id/exerciseScrollView"
+        android:layout_width="395dp"
+        android:layout_height="646dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/exDescription2"
-        app:layout_constraintEnd_toStartOf="@+id/exAdd1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/namePreviewExercise" />
-
-    <Button
-        android:id="@+id/exAdd1"
-        android:layout_width="136dp"
-        android:layout_height="63dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/add"
-        app:layout_constraintBottom_toTopOf="@+id/exAdd2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/exDescription1"
-        app:layout_constraintTop_toBottomOf="@+id/namePreviewExercise" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/namePreviewExercise"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/exerciseName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/exerciseDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+
+                <VideoView
+                    android:id="@+id/exerciseVideo"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:id="@+id/exerciseAddButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Button" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </TableLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
