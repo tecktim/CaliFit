@@ -49,7 +49,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
         Intent receivedIntent = getIntent();
         screenCat = receivedIntent.getStringExtra(receivedIntent.EXTRA_TEXT);
-        System.out.println("screen category is: " + screenCat);
 
         exerciseActivityPresenter = new ExerciseActivityPresenter(this);
 
@@ -63,7 +62,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
 
-        System.out.println(ref);
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -77,7 +75,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                     e.setName(name);
                     e.setDescription(description);
                     e.setLinkToVideo(linkToVideo);
-                    e.printName();
                     exercisesToShow.add(e);
                 }
                 showTable();
@@ -88,7 +85,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 Log.w("##################", "failed to read value", error.toException());
             }
         });
-        Log.d("###########Length", String.valueOf(exercisesToShow.size()));
     }
 
     public void showTable() {
@@ -154,7 +150,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
             tableLayout.setLayoutParams(lp2);
             tableRow2.setLayoutParams(lp2);
-            Log.d("###########" + i, "tablerows added to tableLayout");
             i+=2;
         }
 
@@ -192,7 +187,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
         Intent toGive = new Intent();
         toGive.putExtra("Exercises", exercises);
-        System.out.println(exercises);
         setResult(RESULT_OK, toGive);
         super.finish();
     }
