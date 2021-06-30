@@ -1,12 +1,17 @@
 package com.example.CaliFit;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -15,6 +20,7 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,7 +68,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         scrollView = (ScrollView) findViewById(R.id.exerciseScrollView);
         constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
 
-
+        System.out.println(ref);
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -80,7 +86,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                     exercisesToShow.add(e);
                 }
                 showTable();
-                System.out.println("Wer geht schon hhier hin lol");
             }
 
             @Override
@@ -88,42 +93,27 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 Log.w("##################", "failed to read value", error.toException());
             }
         });
-
-
-
         Log.d("###########Length", String.valueOf(exercisesToShow.size()));
-
     }
 
     public void showTable() {
         int i = 0;
         for (Exercise e: exercisesToShow) {
-            TableRow tableRow = new TableRow(this);
-            //TableRow tableRow2 = new TableRow(this);
+            TableRow tableRow1 = new TableRow(this);
+            TableRow tableRow2 = new TableRow(this);
 
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-            tableRow.setLayoutParams(lp);
+            tableRow1.setLayoutParams(lp);
             //name
             TextView exerciseName = new TextView(this);
             exerciseName.setText(e.name);
             exerciseName.setTextColor(Color.BLACK);
+            exerciseName.setTextSize(18);
             exerciseName.setPadding(2,2,2,2);
             exerciseName.setWidth(300);
             exerciseName.setHeight(150);
-            tableRow.addView(exerciseName);
-            //description
-            TextView exerciseDescription = new TextView(this);
-            exerciseDescription.setText(e.description);
-            exerciseDescription.setTextColor(Color.BLACK);
-            exerciseDescription.setPadding(2,2,2,2);
-            exerciseDescription.setWidth(350);
-            exerciseDescription.setHeight(150);
-            //exerciseDescription.setTooltipText(e.description);
-            tableRow.addView(exerciseDescription);
-            //video
-            VideoView videoView = new VideoView(this);
-            videoView.setVideoURI(Uri.parse(e.linkToVideo));
-            tableRow.addView(videoView);
+            tableRow1.addView(exerciseName);
+
             //button
             Button button = new Button(this);
             button.setOnClickListener(new View.OnClickListener() {
@@ -134,13 +124,43 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             });
             button.setPadding(2,2,2,2);
             button.setText("Add");
-            tableRow.addView(button);
+            tableRow1.addView(button);
 
-            tableLayout.addView(tableRow, i);
+            //description
+            TextView exerciseDescription = new TextView(this);
+            exerciseDescription.setText(e.description);
+            exerciseDescription.setTextColor(Color.BLACK);
+            exerciseDescription.setPadding(2,2,2,2);
+            exerciseDescription.setWidth(800);
+            //exerciseDescription.setHeight(1100);
+            //exerciseDescription.setTooltipText(e.description);
+            tableRow2.addView(exerciseDescription);
+
+            //video
+            ImageView imageView = new ImageView(this);
+            imageView.setPadding(0,20,0,20);
+            Drawable image = getResources().getDrawable(R.drawable.ic_play_80dp);
+            imageView.setImageDrawable(image);
+            tableRow2.addView(imageView);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(e.linkToVideo));
+                    startActivity(i);
+                }
+            });
+
+            tableLayout.addView(tableRow1, i);
+            tableLayout.addView(tableRow2,i+1);
+
+            tableRow1.setPadding(0,50,0,0);
+
             TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
             tableLayout.setLayoutParams(lp2);
+            tableRow2.setLayoutParams(lp2);
             Log.d("###########" + i, "tablerows added to tableLayout");
-            i++;
+            i+=2;
         }
 
         constraintLayout.removeAllViewsInLayout();
