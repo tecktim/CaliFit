@@ -1,6 +1,7 @@
 package com.example.CaliFit;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     private String screenCat;
     private TableLayout tableLayout;
     private ScrollView scrollView;
+    private TextView namePreviewExercise;
     private ConstraintLayout constraintLayout;
 
     ExerciseActivityPresenter exerciseActivityPresenter;
@@ -51,7 +53,8 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         exerciseActivityPresenter = new ExerciseActivityPresenter(this);
 
         //Set the top name TextView to push/pull/legs/core
-        TextView namePreviewExercise = (TextView) findViewById(R.id.namePreviewExercise);
+        namePreviewExercise = (TextView) findViewById(R.id.namePreviewExercise);
+        namePreviewExercise.setText(screenCat);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ref = database.getReference(screenCat);
@@ -59,22 +62,25 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         scrollView = (ScrollView) findViewById(R.id.exerciseScrollView);
         constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
 
-        exercisesToShow.clear();
+
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for(DataSnapshot s : snapshot.getChildren()){
-                    Exercise exerciseToAdd = new Exercise();
+                    Exercise e = new Exercise();
                     String name = s.child("dbName").getValue(String.class);
                     String description = s.child("dbDescription").getValue(String.class);
                     String linkToVideo = s.child("dbLinkToVideo").getValue(String.class);
-                    exerciseToAdd.setCategory(setCategory());
-                    exerciseToAdd.setName(name);
-                    exerciseToAdd.setDescription(description);
-                    exerciseToAdd.setLinkToVideo(linkToVideo);
-                    exercisesToShow.add(exerciseToAdd);
+                    e.setCategory(setCategory());
+                    e.setName(name);
+                    e.setDescription(description);
+                    e.setLinkToVideo(linkToVideo);
+                    e.printName();
+                    exercisesToShow.add(e);
                 }
+                showTable();
+                System.out.println("Wer geht schon hhier hin lol");
             }
 
             @Override
@@ -83,15 +89,36 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             }
         });
 
-        for (Exercise e:exercisesToShow) {
+
+
+        Log.d("###########Length", String.valueOf(exercisesToShow.size()));
+
+    }
+
+    public void showTable() {
+        int i = 0;
+        for (Exercise e: exercisesToShow) {
             TableRow tableRow = new TableRow(this);
+            //TableRow tableRow2 = new TableRow(this);
+
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+            tableRow.setLayoutParams(lp);
             //name
             TextView exerciseName = new TextView(this);
             exerciseName.setText(e.name);
+            exerciseName.setTextColor(Color.BLACK);
+            exerciseName.setPadding(2,2,2,2);
+            exerciseName.setWidth(300);
+            exerciseName.setHeight(150);
             tableRow.addView(exerciseName);
             //description
             TextView exerciseDescription = new TextView(this);
             exerciseDescription.setText(e.description);
+            exerciseDescription.setTextColor(Color.BLACK);
+            exerciseDescription.setPadding(2,2,2,2);
+            exerciseDescription.setWidth(350);
+            exerciseDescription.setHeight(150);
+            //exerciseDescription.setTooltipText(e.description);
             tableRow.addView(exerciseDescription);
             //video
             VideoView videoView = new VideoView(this);
@@ -105,17 +132,25 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                     exercises.add(e);
                 }
             });
+            button.setPadding(2,2,2,2);
             button.setText("Add");
             tableRow.addView(button);
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
 
-            tableLayout.addView(tableRow);
+            tableLayout.addView(tableRow, i);
+            TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+            tableLayout.setLayoutParams(lp2);
+            Log.d("###########" + i, "tablerows added to tableLayout");
+            i++;
         }
 
-        //((ViewGroup)tableLayout.getParent()).removeView(tableLayout);
+        constraintLayout.removeAllViewsInLayout();
+        scrollView.removeAllViewsInLayout();
 
+        constraintLayout.addView(scrollView);
+        scrollView.addView(tableLayout);
+        constraintLayout.addView(namePreviewExercise);
 
-        setContentView(R.layout.activity_exercise);
+        setContentView(constraintLayout);
     }
 
     private Exercise.Category setCategory() {
