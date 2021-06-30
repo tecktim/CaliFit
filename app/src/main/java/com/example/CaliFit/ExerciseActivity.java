@@ -1,19 +1,25 @@
 package com.example.CaliFit;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -21,22 +27,17 @@ import java.util.ArrayList;
 public class ExerciseActivity extends AppCompatActivity implements ExerciseActivityPresenter.ViewInterface {
     ArrayList<Exercise> exercises = new ArrayList<>();
     ArrayList<Exercise> exercisesToShow = new ArrayList<>();
-    private int PushCounter;
-    private int PullCounter;
-    private int LegsCounter;
-    private int CoreCounter;
 
-    private TextView exerciseName;
-    private TextView exerciseDescription;
-    private VideoView videoView;
     private DatabaseReference ref;
-    private DatabaseReference lengthRef;
-    private String eName = "";
-    private String eDescription = "";
-    private String eLink = "";
-
+    private String screenCat;
+    private TableLayout tableLayout;
+    private ScrollView scrollView;
+    private ConstraintLayout constraintLayout;
 
     ExerciseActivityPresenter exerciseActivityPresenter;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,99 +45,96 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         setContentView(R.layout.activity_exercise);
 
         Intent receivedIntent = getIntent();
-        String screenCat = receivedIntent.getStringExtra(receivedIntent.EXTRA_TEXT);
+        screenCat = receivedIntent.getStringExtra(receivedIntent.EXTRA_TEXT);
         System.out.println("screen category is: " + screenCat);
 
         exerciseActivityPresenter = new ExerciseActivityPresenter(this);
 
         //Set the top name TextView to push/pull/legs/core
         TextView namePreviewExercise = (TextView) findViewById(R.id.namePreviewExercise);
-        namePreviewExercise.setText(screenCat);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        lengthRef = database.getReference("AllLengths");
         ref = database.getReference(screenCat);
-
-        exerciseName = (TextView) findViewById(R.id.exerciseName);
-        exerciseDescription = (TextView) findViewById(R.id.exerciseDescription);
+        tableLayout = (TableLayout) findViewById(R.id.tableLayout);
+        scrollView = (ScrollView) findViewById(R.id.exerciseScrollView);
+        constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
 
         exercisesToShow.clear();
-        lengthRef.child(screenCat).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(ExerciseActivity.this, "database error", Toast.LENGTH_SHORT).show();
-                } else {
-                    for (int i = 0; i <= Integer.parseInt((String) task.getResult().getValue()); i++) {
-                        Exercise exerciseToAdd = new Exercise();
-                        ref.child(String.valueOf(i)).child("dbName").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(ExerciseActivity.this, "database error", Toast.LENGTH_SHORT).show();
 
-                                } else {
-                                    exerciseToAdd.setName((String) task.getResult().getValue());
-                                    //name.valueOf(task.getResult().getValue());
-                                    //eName.replace("", (String) task.getResult().getValue());
-                                    //String eeeName = (String) task.getResult().getValue();
-                                    //setString((String) task.getResult().getValue(), ename);
-                                    //eName = eeeName;
-                                }
-                            }
-                        });
-                        ref.child(String.valueOf(i)).child("dbDescription").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(ExerciseActivity.this, "database error", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    exerciseToAdd.setDescription((String) task.getResult().getValue());
-                                }
-                            }
-                        });
-                        ref.child(String.valueOf(i)).child("dbLinkToVideo").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(ExerciseActivity.this, "database error", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    exerciseToAdd.setLinkToVideo((String) task.getResult().getValue());
-                                }
-                            }
-                        });
-                        Exercise.Category exerciseCategory = null;
-                        switch (screenCat) {
-                            case "Push":
-                                exerciseCategory = Exercise.Category.Push;
-                                break;
-                            case "Pull":
-                                exerciseCategory = Exercise.Category.Pull;
-                                break;
-                            case "Legs":
-                                exerciseCategory = Exercise.Category.Legs;
-                                break;
-                            case "Core":
-                                exerciseCategory = Exercise.Category.Core;
-                                break;
-                        }
-                        exerciseToAdd.setCategory(exerciseCategory);
-                        exerciseToAdd.printName();
-                        exercisesToShow.add(exerciseToAdd);
-                        //System.out.println(exerciseToAdd.name);
-                    }
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for(DataSnapshot s : snapshot.getChildren()){
+                    Exercise exerciseToAdd = new Exercise();
+                    String name = s.child("dbName").getValue(String.class);
+                    String description = s.child("dbDescription").getValue(String.class);
+                    String linkToVideo = s.child("dbLinkToVideo").getValue(String.class);
+                    exerciseToAdd.setCategory(setCategory());
+                    exerciseToAdd.setName(name);
+                    exerciseToAdd.setDescription(description);
+                    exerciseToAdd.setLinkToVideo(linkToVideo);
+                    exercisesToShow.add(exerciseToAdd);
                 }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.w("##################", "failed to read value", error.toException());
             }
         });
 
+        for (Exercise e:exercisesToShow) {
+            TableRow tableRow = new TableRow(this);
+            //name
+            TextView exerciseName = new TextView(this);
+            exerciseName.setText(e.name);
+            tableRow.addView(exerciseName);
+            //description
+            TextView exerciseDescription = new TextView(this);
+            exerciseDescription.setText(e.description);
+            tableRow.addView(exerciseDescription);
+            //video
+            VideoView videoView = new VideoView(this);
+            videoView.setVideoURI(Uri.parse(e.linkToVideo));
+            tableRow.addView(videoView);
+            //button
+            Button button = new Button(this);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    exercises.add(e);
+                }
+            });
+            button.setText("Add");
+            tableRow.addView(button);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+
+            tableLayout.addView(tableRow);
+        }
+
+        //((ViewGroup)tableLayout.getParent()).removeView(tableLayout);
 
 
-        //get all exercises from respective category and prepare to show them
-
+        setContentView(R.layout.activity_exercise);
     }
 
-    public void setString(String StringToSave, String WhereToSave) {
-        WhereToSave = StringToSave;
+    private Exercise.Category setCategory() {
+        Exercise.Category exerciseCategory = null;
+        switch (screenCat) {
+            case "Push":
+                exerciseCategory = Exercise.Category.Push;
+                break;
+            case "Pull":
+                exerciseCategory = Exercise.Category.Pull;
+                break;
+            case "Legs":
+                exerciseCategory = Exercise.Category.Legs;
+                break;
+            case "Core":
+                exerciseCategory = Exercise.Category.Core;
+                break;
+        }
+        return exerciseCategory;
     }
 
     @Override

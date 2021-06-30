@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Exercise implements Serializable {
 
+
     public enum Category {
         Push, Pull, Legs, Core
     }
@@ -27,13 +28,20 @@ public class Exercise implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-
     }
 
     public void printName() {
         System.out.println(this.name);
-
     }
+
+    public void printDescription() {
+        System.out.println(this.description);
+    }
+
+    public void printLinkToVideo() {
+        System.out.println(this.linkToVideo);
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
