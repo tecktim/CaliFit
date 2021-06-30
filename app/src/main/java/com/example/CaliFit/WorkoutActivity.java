@@ -1,12 +1,18 @@
 package com.example.CaliFit;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.ArrayList;
 
@@ -14,6 +20,16 @@ import java.util.ArrayList;
 public class WorkoutActivity extends AppCompatActivity implements WorkoutActivityPresenter.ViewInterface{
 
     WorkoutActivityPresenter workoutActivityPresenter;
+    private TableLayout tableLayout;
+    private ScrollView scrollView;
+    private ConstraintLayout constraintLayout;
+    private TextView namePreviewWorkout;
+    private ArrayList<Exercise> PushList;
+    private ArrayList<Exercise> PullList;
+    private ArrayList<Exercise> LegsList;
+    private ArrayList<Exercise> CoreList;
+    private int tableRowCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,8 +38,17 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
 
         workoutActivityPresenter  = new WorkoutActivityPresenter(this);
 
+        constraintLayout = findViewById(R.id.constraintLayout);
+        tableLayout = findViewById(R.id.tableLayout);
+        scrollView = findViewById(R.id.scrollView);
+        namePreviewWorkout = (TextView) findViewById(R.id.namePreviewWorkout);
+        namePreviewWorkout.setText(receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT));
 
-        Button pushButton = findViewById(R.id.push_button);
+        fillLists(workoutActivityPresenter);
+        showWorkoutTables();
+
+
+        /*Button pushButton = new Button(this);
         pushButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,10 +57,10 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 intent.putExtra(Intent.EXTRA_TEXT, "Push");
                 startActivityForResult(intent, 1);
             }
-        });
+        });*/
 
 
-
+/*
         Button pullButton = findViewById(R.id.pull_button);
         pullButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,10 +93,16 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 intent.putExtra(Intent.EXTRA_TEXT, "Core");
                 startActivityForResult(intent, 4);
             }
-        });
+        });*/
 
-        TextView namePreviewWorkout = (TextView) findViewById(R.id.namePreviewWorkout);
-        namePreviewWorkout.setText(receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT));
+
+    }
+
+    private void fillLists(WorkoutActivityPresenter workoutActivityPresenter) {
+        PushList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Push);
+        PullList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Pull);
+        LegsList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Legs);
+        CoreList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Core);
     }
 
     @Override
@@ -106,46 +137,157 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
 
     }
 
+    private void showPushWorkout(ArrayList<Exercise> list){
+
+        if(tableRowCount == 1) {
+            TextView pushHeader = new TextView(this);
+            pushHeader.setText("Push Exercises:");
+            pushHeader.setTextColor(Color.BLACK);
+            pushHeader.setPadding(20, 20, 20, 20);
+            tableLayout.addView(pushHeader);
+            tableRowCount++;
+        }
+
+        for(Exercise e : list){
+            TableRow tableRow = new TableRow(this);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+            tableRow.setLayoutParams(lp);
+
+
+            TextView exerciseName =  new TextView(this);
+            exerciseName.setText(e.name);
+            exerciseName.setTextColor(Color.BLACK);
+            exerciseName.setPadding(20,20,20,20);
+            tableRow.addView(exerciseName);
+
+
+
+            Button exeRemove = new Button(this);
+            exeRemove.setText("Remove");
+            tableRow.addView(exeRemove);
+            exeRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    workoutActivityPresenter.getModel().getList(Exercise.Category.Push).remove(e);
+                    if(tableRowCount<1){
+                    tableRowCount--;}
+                    tableLayout.removeView(tableRow);
+                    tableLayout.removeView(exeRemove);
+                }
+            });
+            tableLayout.addView(tableRow, tableRowCount);
+            tableRowCount++;
+        }
+    }
+
+
+    private void showPullWorkout(ArrayList<Exercise> list){
+        if(list.size() > 0){
+            Log.d("#######", list.get(0).name);
+        }
+    }
+    private void showCoreWorkout(ArrayList<Exercise> list){
+        if(list.size() > 0){
+            Log.d("#######", list.get(0).name);
+        }
+    }
+    private void showLegsWorkout(ArrayList<Exercise> list){
+        if(list.size() > 0){
+            Log.d("#######", list.get(0).name);
+        }
+    }
+    private void showWorkoutTables(){
+        if(tableRowCount == 0){showAddButtons();}
+        showPushWorkout(PushList);
+        /*showPullWorkout(PullList);
+        showPullWorkout(CoreList);
+        showPullWorkout(LegsList);*/
+
+        TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+        tableLayout.setLayoutParams(lp2);
+
+        constraintLayout.removeAllViewsInLayout();
+        scrollView.removeAllViewsInLayout();
+
+        constraintLayout.addView(scrollView);
+        scrollView.addView(tableLayout);
+        constraintLayout.addView(namePreviewWorkout);
+
+        setContentView(constraintLayout);
+    }
+
+    private void showAddButtons() {
+        TableRow addButtonsRow = new TableRow(this);
+        addButtonsRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
+        //push
+        Button pushButton = new Button(this);
+        pushButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Push");
+                startActivityForResult(intent, 1);
+            }
+        });
+        pushButton.setPadding(20, 20, 20, 20);
+        pushButton.setWidth(tableLayout.getWidth()/4);
+        pushButton.setText("Push");
+        addButtonsRow.addView(pushButton);
+        //pull
+        Button pullButton = new Button(this);
+        pullButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Pull");
+                startActivityForResult(intent, 2);
+            }
+        });
+        pullButton.setPadding(20, 20, 20, 20);
+        pullButton.setWidth(tableLayout.getWidth()/4);
+        pullButton.setText("Pull");
+        addButtonsRow.addView(pullButton);
+        //legs
+        Button legsButton = new Button(this);
+        legsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Legs");
+                startActivityForResult(intent, 1);
+            }
+        });
+        legsButton.setPadding(20, 20, 20, 20);
+        legsButton.setWidth(tableLayout.getWidth()/4);
+        legsButton.setText("Legs");
+        addButtonsRow.addView(legsButton);
+        //core
+        Button coreButton = new Button(this);
+        coreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Core");
+                startActivityForResult(intent, 0);
+            }
+        });
+        coreButton.setPadding(20, 20, 20, 20);
+        coreButton.setWidth(tableLayout.getWidth()/4);
+        coreButton.setText("Core");
+        addButtonsRow.addView(coreButton);
+
+
+        tableLayout.addView(addButtonsRow);
+        tableRowCount++;
+    }
+
     @Override
     public void onRestart(){
         super.onRestart();
-        ArrayList<Exercise> PushList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Push);
-        ArrayList<Exercise> PullList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Pull);
-        ArrayList<Exercise> LegsList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Legs);
-        ArrayList<Exercise> CoreList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Core);
-
-        TextView pushExercise1 = findViewById(R.id.push_exercise_text1);
-        TextView pushExercise2 = findViewById(R.id.push_exercise_text2);
-        TextView pushExercise3 = findViewById(R.id.push_exercise_text3);
-        TextView pullExercise1 = findViewById(R.id.pull_exercise_text4);
-        TextView pullExercise2 = findViewById(R.id.pull_exercise_text5);
-        TextView pullExercise3 = findViewById(R.id.pull_exercise_text6);
-        TextView coreExercise1 = findViewById(R.id.core_exercise_text7);
-        TextView coreExercise2 = findViewById(R.id.core_exercise_text8);
-        TextView coreExercise3 = findViewById(R.id.core_exercise_text9);
-        TextView legsExercise1 = findViewById(R.id.legs_exercise_text10);
-        TextView legsExercise2 = findViewById(R.id.legs_exercise_text11);
-        TextView legsExercise3 = findViewById(R.id.legs_exercise_text12);
-        ArrayList<TextView> nameBoxes = new ArrayList<>();
-        nameBoxes.add(pushExercise1); nameBoxes.add(pushExercise2); nameBoxes.add(pushExercise3); nameBoxes.add(pullExercise1); nameBoxes.add(pullExercise2); nameBoxes.add(pullExercise3); nameBoxes.add(legsExercise1); nameBoxes.add(legsExercise2); nameBoxes.add(legsExercise3); nameBoxes.add(coreExercise1); nameBoxes.add(coreExercise2); nameBoxes.add(coreExercise3);
-
-        for(int i = 0; i < workoutActivityPresenter.getModel().PushList.size(); i++){
-            nameBoxes.get(i).setText(workoutActivityPresenter.getModel().PushList.get(i).name);
-            nameBoxes.get(i).setVisibility(View.VISIBLE);
-        }
-        for(int i = 0; i < workoutActivityPresenter.getModel().PullList.size(); i++){
-            nameBoxes.get(i + 3).setText(workoutActivityPresenter.getModel().PullList.get(i).name);
-            nameBoxes.get(i + 3).setVisibility(View.VISIBLE);
-        }
-        for(int i = 0; i < workoutActivityPresenter.getModel().LegsList.size(); i++){
-            nameBoxes.get(i + 6).setText(workoutActivityPresenter.getModel().LegsList.get(i).name);
-            nameBoxes.get(i + 6).setVisibility(View.VISIBLE);
-        }
-        for(int i = 0; i < workoutActivityPresenter.getModel().CoreList.size(); i++){
-            nameBoxes.get(i + 9).setText(workoutActivityPresenter.getModel().CoreList.get(i).name);
-            nameBoxes.get(i + 9).setVisibility(View.VISIBLE);
-        }
-
-
+        showWorkoutTables();
     }
 }

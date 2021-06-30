@@ -6,7 +6,8 @@ public class Exercise implements Serializable {
 
 
     public enum Category {
-        Push, Pull, Legs, Core
+        Core, Legs, Pull, Push
+
     }
 
     public String name;

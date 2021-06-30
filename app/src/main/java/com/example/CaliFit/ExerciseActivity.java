@@ -1,9 +1,6 @@
 package com.example.CaliFit;
 
-import android.app.ActionBar;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -16,11 +13,9 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,7 +60,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ref = database.getReference(screenCat);
         tableLayout = (TableLayout) findViewById(R.id.tableLayout);
-        scrollView = (ScrollView) findViewById(R.id.exerciseScrollView);
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
         constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
 
         System.out.println(ref);
