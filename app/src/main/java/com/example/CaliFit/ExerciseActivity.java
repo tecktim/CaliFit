@@ -55,7 +55,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
         //Set the top name TextView to push/pull/legs/core
         namePreviewExercise = (TextView) findViewById(R.id.namePreviewExercise);
-        namePreviewExercise.setText(screenCat);
+        namePreviewExercise.setText(screenCat + " Übungen");
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         ref = database.getReference(screenCat);
@@ -111,8 +111,16 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    exercises.add(e);
-                    Toast.makeText(ExerciseActivity.this, e.name + " added to " + screenCat + " Exercises", Toast.LENGTH_SHORT).show();
+                    if(exercises.size() >= 3){
+                        Toast.makeText(ExerciseActivity.this, "Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", Toast.LENGTH_SHORT).show();
+                    }else {
+                        if(exercises.contains(e)){
+                            Toast.makeText(ExerciseActivity.this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
+                        }else {
+                            exercises.add(e);
+                            Toast.makeText(ExerciseActivity.this, e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
             });
             button.setPadding(2,2,2,2);
@@ -190,7 +198,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         Intent toGive = new Intent();
         toGive.putExtra("Exercises", exercises);
         setResult(RESULT_OK, toGive);
-        if(exercises.size() > 0){ Toast.makeText(this, "Exercises added to " + screenCat + " workout!", Toast.LENGTH_SHORT).show(); }
+        if(exercises.size() > 0){ Toast.makeText(this, "Übungen erfolgreich zu " + screenCat + " hinzugefügt!", Toast.LENGTH_SHORT).show(); }
         super.finish();
     }
 

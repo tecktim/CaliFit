@@ -10,6 +10,7 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -49,6 +50,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         legsButton = (Button) findViewById(R.id.legsButton);
         coreButton = (Button) findViewById(R.id.coreButton);
 
+        Toast.makeText(this, "Wähle eine Kategorie, um Übungen hinzuzufügen!", Toast.LENGTH_SHORT).show();
 
         setButtonHandlers();
 
@@ -156,14 +158,12 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 exerciseName.setText(e.name);
                 exerciseName.setTextColor(Color.BLACK);
                 exerciseName.setPadding(100,20,100,20);
-                exerciseName.setHeight(100);
-                exerciseName.setHeight(300);
 
                 tableRow.addView(exerciseName);
 
                 //button um zu removen
                 Button exeRemove = new Button(this);
-                exeRemove.setText("Remove");
+                exeRemove.setText("Entfernen");
                 tableRow.addView(exeRemove);
                 exeRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
