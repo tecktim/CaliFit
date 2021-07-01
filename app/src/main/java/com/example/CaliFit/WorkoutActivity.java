@@ -60,24 +60,29 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent toReceive) {
 
-        if (resultCode == RESULT_OK){
-            switch(requestCode) {
-                case 1: ArrayList<Exercise> pushToAdd = (ArrayList<Exercise>)toReceive.getSerializableExtra("Exercises");
+        super.onActivityResult(requestCode, resultCode, toReceive);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 1:
+                    ArrayList<Exercise> pushToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     for (Exercise exercise : pushToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
                     break;
-                case 2:ArrayList<Exercise> pullToAdd = (ArrayList<Exercise>)toReceive.getSerializableExtra("Exercises");
+                case 2:
+                    ArrayList<Exercise> pullToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     for (Exercise exercise : pullToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
                     break;
-                case 3:ArrayList<Exercise> legsToAdd = (ArrayList<Exercise>)toReceive.getSerializableExtra("Exercises");
+                case 3:
+                    ArrayList<Exercise> legsToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     for (Exercise exercise : legsToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
                     break;
-                case 4:ArrayList<Exercise> coreToAdd = (ArrayList<Exercise>)toReceive.getSerializableExtra("Exercises");
+                case 4:
+                    ArrayList<Exercise> coreToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     for (Exercise exercise : coreToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
