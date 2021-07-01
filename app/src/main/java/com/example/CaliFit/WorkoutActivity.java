@@ -10,7 +10,6 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -46,6 +45,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         namePreviewWorkout.setText(receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT));
 
         fillLists(workoutActivityPresenter);
+
+        showAddButtons();
         showWorkoutTables();
     }
 
@@ -88,20 +89,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
 
     }
 
-    private void showPushWorkout(ArrayList<Exercise> list){
-
-
-        if(tableRowCount == 1) {
-            TextView pushHeader = new TextView(this);
-            pushHeader.setText("Push Exercises:");
-            pushHeader.setTextColor(Color.BLACK);
-            pushHeader.setPadding(20, 20, 20, 20);
-            tableLayout.addView(pushHeader, tableRowCount);
-            tableRowCount++;
-        }
-        Log.d("xxxxxxxxxxxxBEVORE ADD", String.valueOf(tableRowCount - PullList.size() - LegsList.size() - CoreList.size()));
+    private void showWorkout(ArrayList<Exercise> list){
         for(Exercise e : list){
-
                 //table row erstellen + params setzen
                 TableRow tableRow = new TableRow(this);
                 TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
@@ -121,151 +110,47 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 exeRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        workoutActivityPresenter.getModel().getList(Exercise.Category.Push).remove(e);
-                        PushList.remove(e);
+                        workoutActivityPresenter.getModel().getList(e.category).remove(e);
+                        switch(e.category) {
+                            case Push: PushList.remove(e);
+                            break;
+                            case Pull: PullList.remove(e);
+                            break;
+                            case Legs: LegsList.remove(e);
+                            break;
+                            case Core: CoreList.remove(e);
+                            break;
+                        }
                         tableLayout.removeView(tableRow);
                         tableLayout.removeView(exeRemove);
+                        tableRowCount--;
                     }
                 });
-                tableLayout.addView(tableRow, tableRowCount - PullList.size() - LegsList.size() - CoreList.size());
+                tableLayout.addView(tableRow, tableRowCount);
                 tableRowCount++;
-            }
-        Log.d("xxxxxxxxxxxxAFTER ADD", String.valueOf(tableRowCount - PullList.size() - LegsList.size() - CoreList.size()));
 
-    }
-
-
-
-    private void showPullWorkout(ArrayList<Exercise> list){
-        if(tableRowCount == 2 + PushList.size()) {
-            TextView pullHeader = new TextView(this);
-            pullHeader.setText("Pull Exercises:");
-            pullHeader.setTextColor(Color.BLACK);
-            pullHeader.setPadding(20, 20, 20, 20);
-            tableLayout.addView(pullHeader);
-            tableRowCount++;
         }
-
-        /*for(Exercise e : list){
-            TableRow tableRow = new TableRow(this);
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-            tableRow.setLayoutParams(lp);
-
-
-            TextView exerciseName =  new TextView(this);
-            exerciseName.setText(e.name);
-            exerciseName.setTextColor(Color.BLACK);
-            exerciseName.setPadding(20,20,20,20);
-            tableRow.addView(exerciseName);
-
-
-
-            Button exeRemove = new Button(this);
-            exeRemove.setText("Remove");
-            tableRow.addView(exeRemove);
-            exeRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    workoutActivityPresenter.getModel().getList(Exercise.Category.Push).remove(e);
-                    if(tableRowCount<1){
-                        tableRowCount--;}
-                    tableLayout.removeView(tableRow);
-                    tableLayout.removeView(exeRemove);
-                }
-            });
-            tableLayout.addView(tableRow, tableRowCount);
-            tableRowCount++;
-        }*/
     }
-    private void showCoreWorkout(ArrayList<Exercise> list){
-        if(tableRowCount == 4 + PushList.size()) {
-            TextView coreHeader = new TextView(this);
-            coreHeader.setText("Core Exercises:");
-            coreHeader.setTextColor(Color.BLACK);
-            coreHeader.setPadding(20, 20, 20, 20);
-            tableLayout.addView(coreHeader);
-            tableRowCount++;
-        }
 
-        /*for(Exercise e : list){
-            TableRow tableRow = new TableRow(this);
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-            tableRow.setLayoutParams(lp);
+    private void showTitle(Exercise.Category cat) {
 
-
-            TextView exerciseName =  new TextView(this);
-            exerciseName.setText(e.name);
-            exerciseName.setTextColor(Color.BLACK);
-            exerciseName.setPadding(20,20,20,20);
-            tableRow.addView(exerciseName);
-
-
-
-            Button exeRemove = new Button(this);
-            exeRemove.setText("Remove");
-            tableRow.addView(exeRemove);
-            exeRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    workoutActivityPresenter.getModel().getList(Exercise.Category.Push).remove(e);
-                    if(tableRowCount<1){
-                        tableRowCount--;}
-                    tableLayout.removeView(tableRow);
-                    tableLayout.removeView(exeRemove);
-                }
-            });
-            tableLayout.addView(tableRow, tableRowCount);
-            tableRowCount++;
-        }*/
+        TextView header = new TextView(this);
+        header.setText(cat + " Exercises:");
+        header.setTextColor(Color.BLACK);
+        header.setPadding(20, 20, 20, 20);
+        tableLayout.addView(header, tableRowCount);
+        tableRowCount++;
     }
-    private void showLegsWorkout(ArrayList<Exercise> list){
-        if(tableRowCount == 3 + PushList.size()) {
-            TextView legsHeader = new TextView(this);
-            legsHeader.setText("Legs Exercises:");
-            legsHeader.setTextColor(Color.BLACK);
-            legsHeader.setPadding(20, 20, 20, 20);
-            tableLayout.addView(legsHeader);
-            tableRowCount++;
-        }
 
-        /*for(Exercise e : list){
-            TableRow tableRow = new TableRow(this);
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-            tableRow.setLayoutParams(lp);
-
-
-            TextView exerciseName =  new TextView(this);
-            exerciseName.setText(e.name);
-            exerciseName.setTextColor(Color.BLACK);
-            exerciseName.setPadding(20,20,20,20);
-            tableRow.addView(exerciseName);
-
-
-
-            Button exeRemove = new Button(this);
-            exeRemove.setText("Remove");
-            tableRow.addView(exeRemove);
-            exeRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    workoutActivityPresenter.getModel().getList(Exercise.Category.Push).remove(e);
-                    if(tableRowCount<1){
-                        tableRowCount--;}
-                    tableLayout.removeView(tableRow);
-                    tableLayout.removeView(exeRemove);
-                }
-            });
-            tableLayout.addView(tableRow, tableRowCount);
-            tableRowCount++;
-        }*/
-    }
     private void showWorkoutTables(){
-
-        if(tableRowCount == 0){showAddButtons();}
-        showPushWorkout(PushList);
-        //showPullWorkout(PullList);
-        //showLegsWorkout(LegsList);
-        //showCoreWorkout(CoreList);
+        showTitle(Exercise.Category.Push);
+        showWorkout(PushList);
+        showTitle(Exercise.Category.Pull);
+        showWorkout(PullList);
+        showTitle(Exercise.Category.Legs);
+        showWorkout(LegsList);
+        showTitle(Exercise.Category.Core);
+        showWorkout(CoreList);
 
         TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
         tableLayout.setLayoutParams(lp2);
@@ -292,9 +177,6 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Push");
                 startActivityForResult(intent, 1);
-                Log.d("### TABLE ROW COUNT: ", String.valueOf(tableRowCount));
-                Log.d("### PUSH LIST COUNT: ", String.valueOf(PushList.size()));
-
             }
         });
         pushButton.setPadding(20, 20, 20, 20);
@@ -348,14 +230,31 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         coreButton.setText("Core");
         addButtonsRow.addView(coreButton);
 
-
-        tableLayout.addView(addButtonsRow);
-        tableRowCount++;
+        tableLayout.addView(addButtonsRow, 0);
+        tableRowCount = 1;
     }
 
     @Override
     public void onRestart(){
         super.onRestart();
+        clearScreen();
+        //count = 0;
+        showAddButtons();
+        //coiunt = 1;
+
+        fillLists(workoutActivityPresenter);
+
         showWorkoutTables();
+
+        Log.d("### AFTER onRestart ###", String.valueOf(tableRowCount));
+    }
+
+    private void clearScreen() {
+        Log.d("### BEFORE CLEAR ###", String.valueOf(tableRowCount));
+        for(int i = tableRowCount - 1; i >= 0; i--){
+            tableLayout.removeViewAt(i);
+            tableRowCount--;
+        }
+        Log.d("### AFTER CLEAR ###", String.valueOf(tableRowCount));
     }
 }

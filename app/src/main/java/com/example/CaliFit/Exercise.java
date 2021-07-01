@@ -14,17 +14,17 @@ public class Exercise implements Serializable {
     String description;
     String linkToVideo;
     public Category category;
+    public boolean draw;
 
     public Exercise(String name, String description, String linkToVideo, Category category) {
         this.name = name;
         this.description = description;
         this.linkToVideo = linkToVideo;
         this.category = category;
-
+        this.draw = false;
     }
 
     public Exercise() {
-
     }
 
     public void setName(String name) {

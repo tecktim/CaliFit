@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -188,12 +189,12 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         Intent toGive = new Intent();
         toGive.putExtra("Exercises", exercises);
         setResult(RESULT_OK, toGive);
+        if(exercises.size() > 0){ Toast.makeText(this, "Exercises added to " + screenCat + " workout!", Toast.LENGTH_SHORT).show(); }
         super.finish();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
     }
 }
