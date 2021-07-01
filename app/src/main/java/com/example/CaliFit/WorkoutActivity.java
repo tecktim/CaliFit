@@ -60,7 +60,6 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent toReceive) {
 
-        super.onActivityResult(requestCode, resultCode, toReceive);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 1:
@@ -98,14 +97,17 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         for(Exercise e : list){
                 //table row erstellen + params setzen
                 TableRow tableRow = new TableRow(this);
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
                 tableRow.setLayoutParams(lp);
 
                 //text view für name
                 TextView exerciseName =  new TextView(this);
                 exerciseName.setText(e.name);
                 exerciseName.setTextColor(Color.BLACK);
-                exerciseName.setPadding(20,20,20,20);
+                exerciseName.setPadding(100,20,100,20);
+                exerciseName.setHeight(100);
+                exerciseName.setHeight(300);
+
                 tableRow.addView(exerciseName);
 
                 //button um zu removen
@@ -142,7 +144,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         TextView header = new TextView(this);
         header.setText(cat + " Exercises:");
         header.setTextColor(Color.BLACK);
-        header.setPadding(20, 20, 20, 20);
+        header.setPadding(50, 20, 20, 20);
         tableLayout.addView(header, tableRowCount);
         tableRowCount++;
     }
@@ -156,8 +158,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         showWorkout(LegsList);
         showTitle(Exercise.Category.Core);
         showWorkout(CoreList);
+        Log.d("### CORE LIST LENGTH ##", String.valueOf(CoreList.size()));
 
-        TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+        TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
         tableLayout.setLayoutParams(lp2);
 
         constraintLayout.removeAllViewsInLayout();
@@ -173,6 +176,10 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     private void showAddButtons() {
         TableRow addButtonsRow = new TableRow(this);
         addButtonsRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
+        addButtonsRow.setPaddingRelative(20, 50, 20, 50);
+        addButtonsRow.clearDisappearingChildren();
+
+
         //push
         Button pushButton = new Button(this);
         pushButton.setOnClickListener(new View.OnClickListener() {
@@ -184,8 +191,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 startActivityForResult(intent, 1);
             }
         });
-        pushButton.setPadding(20, 20, 20, 20);
-        pushButton.setWidth(tableLayout.getWidth()/4);
+
         pushButton.setText("Push");
         addButtonsRow.addView(pushButton);
 
@@ -200,8 +206,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 startActivityForResult(intent, 2);
             }
         });
-        pullButton.setPadding(20, 20, 20, 20);
-        pullButton.setWidth(tableLayout.getWidth()/4);
+
         pullButton.setText("Pull");
         addButtonsRow.addView(pullButton);
         //legs
@@ -212,11 +217,10 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
 
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Legs");
-                startActivityForResult(intent, 1);
+                startActivityForResult(intent, 3);
             }
         });
-        legsButton.setPadding(20, 20, 20, 20);
-        legsButton.setWidth(tableLayout.getWidth()/4);
+
         legsButton.setText("Legs");
         addButtonsRow.addView(legsButton);
         //core
@@ -227,11 +231,10 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
 
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Core");
-                startActivityForResult(intent, 0);
+                startActivityForResult(intent, 4);
             }
         });
-        coreButton.setPadding(20, 20, 20, 20);
-        coreButton.setWidth(tableLayout.getWidth()/4);
+
         coreButton.setText("Core");
         addButtonsRow.addView(coreButton);
 
@@ -242,24 +245,16 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     @Override
     public void onRestart(){
         super.onRestart();
-        clearScreen();
-        //count = 0;
-        showAddButtons();
-        //coiunt = 1;
-
         fillLists(workoutActivityPresenter);
-
+        clearScreen();
+        showAddButtons();
         showWorkoutTables();
-
-        Log.d("### AFTER onRestart ###", String.valueOf(tableRowCount));
     }
 
     private void clearScreen() {
-        Log.d("### BEFORE CLEAR ###", String.valueOf(tableRowCount));
         for(int i = tableRowCount - 1; i >= 0; i--){
             tableLayout.removeViewAt(i);
             tableRowCount--;
         }
-        Log.d("### AFTER CLEAR ###", String.valueOf(tableRowCount));
     }
 }

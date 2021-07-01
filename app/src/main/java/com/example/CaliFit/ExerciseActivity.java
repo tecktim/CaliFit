@@ -112,6 +112,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 @Override
                 public void onClick(View v) {
                     exercises.add(e);
+                    Toast.makeText(ExerciseActivity.this, e.name + " added to " + screenCat + " Exercises", Toast.LENGTH_SHORT).show();
                 }
             });
             button.setPadding(2,2,2,2);
