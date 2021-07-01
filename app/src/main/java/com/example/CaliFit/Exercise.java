@@ -1,17 +1,57 @@
 package com.example.CaliFit;
 
-public class Exercise {
+import java.io.Serializable;
+
+public class Exercise implements Serializable {
+
+
     public enum Category {
-        Push, Pull, Legs, Core
+        Core, Legs, Pull, Push
+
     }
 
-    String name;
+    public String name;
     String description;
     String linkToVideo;
-    Category category;
+    public Category category;
+    public boolean draw;
 
-    public Exercise(String name, Category category) {
+    public Exercise(String name, String description, String linkToVideo, Category category) {
         this.name = name;
+        this.description = description;
+        this.linkToVideo = linkToVideo;
+        this.category = category;
+        this.draw = false;
+    }
+
+    public Exercise() {
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void printName() {
+        System.out.println(this.name);
+    }
+
+    public void printDescription() {
+        System.out.println(this.description);
+    }
+
+    public void printLinkToVideo() {
+        System.out.println(this.linkToVideo);
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setLinkToVideo(String linkToVideo) {
+        this.linkToVideo = linkToVideo;
+    }
+
+    public void setCategory(Exercise.Category category) {
         this.category = category;
     }
 }

@@ -1,13 +1,12 @@
 package com.example.CaliFit;
 
-public class HomeActivityPresenter {
+public class ExerciseActivityPresenter {
     private ViewInterface viewInterface;
 
-    public HomeActivityPresenter(ViewInterface viewInterface) {
+    public ExerciseActivityPresenter(ViewInterface viewInterface) {
         this.viewInterface = viewInterface;
     }
 
     public interface ViewInterface{
-
     }
 }

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
+    public Model(){
+
+    }
+
     List<Exercise> PushList = new ArrayList<Exercise>();
     List<Exercise> PullList = new ArrayList<Exercise>();
     List<Exercise> LegsList = new ArrayList<Exercise>();
@@ -33,5 +37,4 @@ public class Model {
             default: return null;
         }
     }
-
 }
