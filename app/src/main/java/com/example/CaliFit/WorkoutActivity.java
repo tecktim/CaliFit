@@ -24,6 +24,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     private ScrollView scrollView;
     private ConstraintLayout constraintLayout;
     private TextView namePreviewWorkout;
+    private Button pushButton, pullButton, legsButton, coreButton;
     private ArrayList<Exercise> PushList;
     private ArrayList<Exercise> PullList;
     private ArrayList<Exercise> LegsList;
@@ -43,11 +44,60 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         scrollView = findViewById(R.id.scrollView);
         namePreviewWorkout = (TextView) findViewById(R.id.namePreviewWorkout);
         namePreviewWorkout.setText(receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT));
+        pushButton = (Button) findViewById(R.id.pushButton);
+        pullButton = (Button) findViewById(R.id.pullButton);
+        legsButton = (Button) findViewById(R.id.legsButton);
+        coreButton = (Button) findViewById(R.id.coreButton);
+
+
+        setButtonHandlers();
 
         fillLists(workoutActivityPresenter);
 
-        showAddButtons();
         showWorkoutTables();
+    }
+
+    private void setButtonHandlers() {
+        //push
+        pushButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Push");
+                startActivityForResult(intent, 1);
+            }
+        });
+        //pull
+        pullButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Pull");
+                startActivityForResult(intent, 2);
+            }
+        });
+        //legs
+        legsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Legs");
+                startActivityForResult(intent, 3);
+            }
+        });
+        //core
+        coreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, "Core");
+                startActivityForResult(intent, 4);
+            }
+        });
     }
 
     private void fillLists(WorkoutActivityPresenter workoutActivityPresenter) {
@@ -60,6 +110,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent toReceive) {
 
+        super.onActivityResult(requestCode, resultCode, toReceive);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 1:
@@ -163,7 +214,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
         tableLayout.setLayoutParams(lp2);
 
-        constraintLayout.removeAllViewsInLayout();
+        constraintLayout.removeView(scrollView);
+        constraintLayout.removeView(namePreviewWorkout);
+
         scrollView.removeAllViewsInLayout();
 
         constraintLayout.addView(scrollView);
@@ -173,81 +226,11 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         setContentView(constraintLayout);
     }
 
-    private void showAddButtons() {
-        TableRow addButtonsRow = new TableRow(this);
-        addButtonsRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
-        addButtonsRow.setPaddingRelative(20, 50, 20, 50);
-        addButtonsRow.clearDisappearingChildren();
-
-
-        //push
-        Button pushButton = new Button(this);
-        pushButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Push");
-                startActivityForResult(intent, 1);
-            }
-        });
-
-        pushButton.setText("Push");
-        addButtonsRow.addView(pushButton);
-
-        //pull
-        Button pullButton = new Button(this);
-        pullButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Pull");
-                startActivityForResult(intent, 2);
-            }
-        });
-
-        pullButton.setText("Pull");
-        addButtonsRow.addView(pullButton);
-        //legs
-        Button legsButton = new Button(this);
-        legsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Legs");
-                startActivityForResult(intent, 3);
-            }
-        });
-
-        legsButton.setText("Legs");
-        addButtonsRow.addView(legsButton);
-        //core
-        Button coreButton = new Button(this);
-        coreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Core");
-                startActivityForResult(intent, 4);
-            }
-        });
-
-        coreButton.setText("Core");
-        addButtonsRow.addView(coreButton);
-
-        tableLayout.addView(addButtonsRow, 0);
-        tableRowCount = 1;
-    }
-
     @Override
     public void onRestart(){
         super.onRestart();
         fillLists(workoutActivityPresenter);
         clearScreen();
-        showAddButtons();
         showWorkoutTables();
     }
 
