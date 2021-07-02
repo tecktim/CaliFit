@@ -3,7 +3,6 @@ package com.example.CaliFit;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -31,6 +30,44 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     private ArrayList<Exercise> LegsList;
     private ArrayList<Exercise> CoreList;
     private int tableRowCount;
+    public static TinyDB tinyDB;
+    private String whichWorkout;
+
+    public static TinyDB getDB(){
+        return tinyDB;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //getListsFromTinyDB();
+        //fillLists(workoutActivityPresenter);
+        //setListsToTinyDB();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //getListsFromTinyDB();
+        //fillLists(workoutActivityPresenter);
+        //setListsToTinyDB();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //getListsFromTinyDB();
+        //fillLists(workoutActivityPresenter);
+        //setListsToTinyDB();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        //getListsFromTinyDB();
+        //fillLists(workoutActivityPresenter);
+        //setListsToTinyDB();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,18 +81,23 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         tableLayout = findViewById(R.id.tableLayout);
         scrollView = findViewById(R.id.scrollView);
         namePreviewWorkout = (TextView) findViewById(R.id.namePreviewWorkout);
-        namePreviewWorkout.setText(receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT));
+        whichWorkout = (String) receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT);
+        namePreviewWorkout.setText(whichWorkout);
         pushButton = (Button) findViewById(R.id.pushButton);
         pullButton = (Button) findViewById(R.id.pullButton);
         legsButton = (Button) findViewById(R.id.legsButton);
         coreButton = (Button) findViewById(R.id.coreButton);
 
-        Toast.makeText(this, "Wähle eine Kategorie, um Übungen hinzuzufügen!", Toast.LENGTH_SHORT).show();
 
-        setButtonHandlers();
+        Toast.makeText(this, "Wähle eine Kategorie, um Übungen hinzuzufügen!", Toast.LENGTH_LONG).show();
 
+        tinyDB = new TinyDB(this);
+
+        tinyDB.putString("whichWorkout", whichWorkout);
+        getListsFromTinyDB();
         fillLists(workoutActivityPresenter);
-
+        //setListsToTinyDB();
+        setButtonHandlers();
         showWorkoutTables();
     }
 
@@ -68,6 +110,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Push");
                 startActivityForResult(intent, 1);
+                //setListsToTinyDB();
             }
         });
         //pull
@@ -78,6 +121,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Pull");
                 startActivityForResult(intent, 2);
+                //setListsToTinyDB();
             }
         });
         //legs
@@ -88,6 +132,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Legs");
                 startActivityForResult(intent, 3);
+                //setListsToTinyDB();
             }
         });
         //core
@@ -98,6 +143,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Core");
                 startActivityForResult(intent, 4);
+                //setListsToTinyDB();
             }
         });
     }
@@ -120,30 +166,33 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                     for (Exercise exercise : pushToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
+                    tinyDB.putListObject("PushExercises"+whichWorkout, pushToAdd);
                     break;
                 case 2:
                     ArrayList<Exercise> pullToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     for (Exercise exercise : pullToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
+                    tinyDB.putListObject("PullExercises"+whichWorkout, pullToAdd);
                     break;
                 case 3:
                     ArrayList<Exercise> legsToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     for (Exercise exercise : legsToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
+                    tinyDB.putListObject("LegsExercises"+whichWorkout, legsToAdd);
                     break;
                 case 4:
                     ArrayList<Exercise> coreToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     for (Exercise exercise : coreToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
+                    tinyDB.putListObject("CoreExercises"+whichWorkout, coreToAdd);
                     break;
                 default:
                     return;
             }
         }
-
     }
 
     private void showWorkout(ArrayList<Exercise> list){
@@ -181,6 +230,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                         }
                         tableLayout.removeView(tableRow);
                         tableLayout.removeView(exeRemove);
+                        setListsToTinyDB();
                         tableRowCount--;
                     }
                 });
@@ -209,7 +259,6 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         showWorkout(LegsList);
         showTitle(Exercise.Category.Core);
         showWorkout(CoreList);
-        Log.d("### CORE LIST LENGTH ##", String.valueOf(CoreList.size()));
 
         TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
         tableLayout.setLayoutParams(lp2);
@@ -229,9 +278,27 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     @Override
     public void onRestart(){
         super.onRestart();
+
+
+        //getListsFromTinyDB();
         fillLists(workoutActivityPresenter);
+        //setListsToTinyDB();
         clearScreen();
         showWorkoutTables();
+    }
+
+    private void setListsToTinyDB(){
+        tinyDB.putListObject("PushExercises"+whichWorkout, PushList);
+        tinyDB.putListObject("PullExercises"+whichWorkout, PullList);
+        tinyDB.putListObject("LegsExercises"+whichWorkout, LegsList);
+        tinyDB.putListObject("CoreExercises"+whichWorkout, CoreList);
+    }
+
+    public void getListsFromTinyDB(){
+        workoutActivityPresenter.setPushList((ArrayList)tinyDB.getListObject("PushExercises"+whichWorkout, Exercise.class));
+        workoutActivityPresenter.setPullList((ArrayList) tinyDB.getListObject("PullExercises"+whichWorkout, Exercise.class));
+        workoutActivityPresenter.setLegsList((ArrayList)tinyDB.getListObject("LegsExercises"+whichWorkout, Exercise.class));
+        workoutActivityPresenter.setCoreList((ArrayList)tinyDB.getListObject("CoreExercises"+whichWorkout, Exercise.class));
     }
 
     private void clearScreen() {

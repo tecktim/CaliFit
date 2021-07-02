@@ -41,7 +41,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
             @Override
             public void onClick(View v) {
                 Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Workout one");
+                intent.putExtra(Intent.EXTRA_TEXT, "Workout 1");
                 startActivity(intent);
             }
         });
@@ -50,7 +50,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
             @Override
             public void onClick(View v) {
                 Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Workout two");
+                intent.putExtra(Intent.EXTRA_TEXT, "Workout 2");
                 startActivity(intent);
             }
         });
@@ -59,7 +59,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
             @Override
             public void onClick(View v) {
                 Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Workout three");
+                intent.putExtra(Intent.EXTRA_TEXT, "Workout 3");
                 startActivity(intent);
             }
         });
@@ -89,7 +89,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

@@ -31,12 +31,16 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     ArrayList<Exercise> exercises = new ArrayList<>();
     ArrayList<Exercise> exercisesToShow = new ArrayList<>();
 
+    private TinyDB tinyDB;
     private DatabaseReference ref;
     private String screenCat;
     private TableLayout tableLayout;
     private ScrollView scrollView;
     private TextView namePreviewExercise;
     private ConstraintLayout constraintLayout;
+    private Toast mToast;
+    private String whichWorkout;
+    private ArrayList<Exercise> toCheck;
 
     ExerciseActivityPresenter exerciseActivityPresenter;
 
@@ -63,6 +67,13 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
 
+        tinyDB= WorkoutActivity.getDB();
+        whichWorkout = tinyDB.getString("whichWorkout");
+        toCheck = (ArrayList)tinyDB.getListObject(screenCat+"Exercises"+whichWorkout, Exercise.class);
+
+        for(Exercise e:toCheck){
+            e.printName();
+        }
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -91,6 +102,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     public void showTable() {
         int i = 0;
         for (Exercise e: exercisesToShow) {
+
             TableRow tableRow1 = new TableRow(this);
             TableRow tableRow2 = new TableRow(this);
 
@@ -112,13 +124,16 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 @Override
                 public void onClick(View v) {
                     if(exercises.size() >= 3){
-                        Toast.makeText(ExerciseActivity.this, "Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", Toast.LENGTH_SHORT).show();
+                        showAToast("Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", 0);
+                        //Toast.makeText(ExerciseActivity.this, "Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", Toast.LENGTH_SHORT).show();
                     }else {
                         if(exercises.contains(e)){
-                            Toast.makeText(ExerciseActivity.this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
+                            showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
+                            //Toast.makeText(ExerciseActivity.this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
                         }else {
                             exercises.add(e);
-                            Toast.makeText(ExerciseActivity.this, e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
+                            showAToast(e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", 0);
+                            //Toast.makeText(ExerciseActivity.this, e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -198,12 +213,32 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         Intent toGive = new Intent();
         toGive.putExtra("Exercises", exercises);
         setResult(RESULT_OK, toGive);
-        if(exercises.size() > 0){ Toast.makeText(this, "Übungen erfolgreich zu " + screenCat + " hinzugefügt!", Toast.LENGTH_SHORT).show(); }
+        if(exercises.size() > 0){
+            showAToast("Übungen erfolgreich zu " + screenCat + " hinzugefügt!", 1);
+            //Toast.makeText(this, "Übungen erfolgreich zu " + screenCat + " hinzugefügt!", Toast.LENGTH_LONG).show();
+            }
         super.finish();
     }
 
     @Override
     protected void onPause() {
+
         super.onPause();
     }
+
+    //https://stackoverflow.com/questions/6925156/how-to-avoid-a-toast-if-theres-one-toast-already-being-shown
+    //Length 0 = short, 1 = long
+    public void showAToast(String message, int length){
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        if(length == 0){
+            mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        }
+        if(length == 1){
+            mToast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+        }
+        mToast.show();
+    }
+
 }

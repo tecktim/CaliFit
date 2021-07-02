@@ -1,6 +1,6 @@
 package com.example.CaliFit;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class WorkoutActivityPresenter {
     private Model model;
@@ -23,14 +23,17 @@ public class WorkoutActivityPresenter {
         System.out.println(model.PushList.get(0).name);
     }
 
-
-
-    public String printName(Exercise.Category category, int i) {
-        List<Exercise> listToPrint = this.model.getList(category);
-        if(i > listToPrint.size()) {
-            return "failed";
-        }
-        return listToPrint.get(i).name;
+    public void setPushList(ArrayList<Exercise> list){
+        model.PushList = list;
+    }
+    public void setPullList(ArrayList<Exercise> list){
+        model.PullList = list;
+    }
+    public void setLegsList(ArrayList<Exercise> list){
+        model.LegsList = list;
+    }
+    public void setCoreList(ArrayList<Exercise> list){
+        model.CoreList = list;
     }
 
     public interface ViewInterface{
