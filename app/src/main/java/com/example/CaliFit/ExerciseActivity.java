@@ -38,14 +38,27 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     private ScrollView scrollView;
     private TextView namePreviewExercise;
     private ConstraintLayout constraintLayout;
-    private Toast mToast;
+    private static Toast mToast;
     private String whichWorkout;
     private ArrayList<Exercise> toCheck;
 
     ExerciseActivityPresenter exerciseActivityPresenter;
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
+    }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +80,15 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
 
+        System.out.println(ref);
+
         tinyDB= WorkoutActivity.getDB();
         whichWorkout = tinyDB.getString("whichWorkout");
         toCheck = (ArrayList)tinyDB.getListObject(screenCat+"Exercises"+whichWorkout, Exercise.class);
 
-        for(Exercise e:toCheck){
-            e.printName();
-        }
+
+
+
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -89,6 +104,14 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                     e.setLinkToVideo(linkToVideo);
                     exercisesToShow.add(e);
                 }
+                for(Exercise e: exercisesToShow){
+                    for(Exercise toCheck : toCheck){
+                        if(e.name.equals(toCheck.name)){
+                            e.added = true;
+                            Log.d("#########", "WTF IM SETTING IT TO TRUE SHEEESH, ITS A " + e.name);
+                        }
+                    }
+                }
                 showTable();
             }
 
@@ -97,12 +120,13 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 Log.w("##################", "failed to read value", error.toException());
             }
         });
+
+
     }
 
     public void showTable() {
         int i = 0;
         for (Exercise e: exercisesToShow) {
-
             TableRow tableRow1 = new TableRow(this);
             TableRow tableRow2 = new TableRow(this);
 
@@ -123,19 +147,22 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(exercises.size() >= 3){
-                        showAToast("Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", 0);
-                        //Toast.makeText(ExerciseActivity.this, "Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", Toast.LENGTH_SHORT).show();
-                    }else {
-                        if(exercises.contains(e)){
-                            showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
-                            //Toast.makeText(ExerciseActivity.this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
-                        }else {
-                            exercises.add(e);
-                            showAToast(e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", 0);
-                            //Toast.makeText(ExerciseActivity.this, e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
+                    if(e.added) {
+                        showAToast("Diese Übung ist bereits in deinem Workout!", 0);
                         }
+                        else{
+                            if(exercises.size() >= 3 || toCheck.size() >= 3){
+                                showAToast("Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", 0);
+                            }else {
+                                if(exercises.contains(e)){
+                                    showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
+                                }else {
+                                    exercises.add(e);
+                                    showAToast(e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", 0);
+                                }
+                            }
                     }
+
                 }
             });
             button.setPadding(2,2,2,2);
@@ -148,8 +175,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             exerciseDescription.setTextColor(Color.BLACK);
             exerciseDescription.setPadding(2,2,2,2);
             exerciseDescription.setWidth(800);
-            //exerciseDescription.setHeight(1100);
-            //exerciseDescription.setTooltipText(e.description);
             tableRow2.addView(exerciseDescription);
 
             //video
@@ -209,7 +234,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
     @Override
     public void finish() {
-
         Intent toGive = new Intent();
         toGive.putExtra("Exercises", exercises);
         setResult(RESULT_OK, toGive);

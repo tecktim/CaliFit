@@ -15,6 +15,7 @@ public class Exercise implements Serializable {
     String linkToVideo;
     public Category category;
     public boolean draw;
+    public boolean added;
 
     public Exercise(String name, String description, String linkToVideo, Category category) {
         this.name = name;
@@ -22,6 +23,7 @@ public class Exercise implements Serializable {
         this.linkToVideo = linkToVideo;
         this.category = category;
         this.draw = false;
+        this.added = false;
     }
 
     public Exercise() {
