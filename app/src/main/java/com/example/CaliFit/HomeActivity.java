@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -33,7 +32,9 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
     private ArrayList<Exercise> PullList = new ArrayList<>();
     private ArrayList<Exercise> LegsList = new ArrayList<>();
     private ArrayList<Exercise> CoreList = new ArrayList<>();
-
+    private Button addWorkoutOne;
+    private Button addWorkoutTwo;
+    private Button addWorkoutThree;
     private static TinyDB tinyDB;
 
     public static TinyDB getDB(){
@@ -53,6 +54,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
             tinyDB = new TinyDB(this);
         }
         handleDataOnStart();
+        setWorkoutNames();
     }
 
     private void handleDataOnStart() {
@@ -92,6 +94,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
         });
     }
 
+
     private Exercise.Category setCategory(String category) {
         Exercise.Category exerciseCategory = null;
         switch (category) {
@@ -112,28 +115,38 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
     }
 
     private void setButtons() {
-        Button aboutButton = findViewById(R.id.aboutButton);
-        aboutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openAboutIntent();
-            }
+        Button addWorkoutBeginner = findViewById(R.id.addWorkoutBeginner);
+        addWorkoutBeginner.setOnClickListener(v -> {
+            Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
+            intent.putExtra(Intent.EXTRA_TEXT, "Anfänger");
+            startActivity(intent);
         });
+        Button addWorkoutAdvanced = findViewById(R.id.addWorkoutAdvanced);
+        addWorkoutAdvanced.setOnClickListener(v -> {
+            Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
+            intent.putExtra(Intent.EXTRA_TEXT, "Fortgeschritten");
+            startActivity(intent);
+        });
+        Button aboutButton = findViewById(R.id.aboutButton);
+
+        aboutButton.setOnClickListener(view -> openAboutIntent());
         homeActivityPresenter  = new HomeActivityPresenter(this);
+
         TextView text = (TextView) findViewById(R.id.namePreviewHome);
-        Button addWorkoutOne = findViewById(R.id.addWorkoutOne);
+
+        addWorkoutOne = findViewById(R.id.addWorkoutOne);
         addWorkoutOne.setOnClickListener(v -> {
             Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
             intent.putExtra(Intent.EXTRA_TEXT, "Workout 1");
             startActivity(intent);
         });
-        Button addWorkoutTwo = findViewById(R.id.addWorkoutTwo);
+        addWorkoutTwo = findViewById(R.id.addWorkoutTwo);
         addWorkoutTwo.setOnClickListener(v -> {
             Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
             intent.putExtra(Intent.EXTRA_TEXT, "Workout 2");
             startActivity(intent);
         });
-        Button addWorkoutThree = findViewById(R.id.addWorkoutThree);
+        addWorkoutThree = findViewById(R.id.addWorkoutThree);
         addWorkoutThree.setOnClickListener(v -> {
             Intent intent  = new Intent(HomeActivity.this, WorkoutActivity.class);
             intent.putExtra(Intent.EXTRA_TEXT, "Workout 3");
@@ -166,5 +179,17 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        setWorkoutNames();
+    }
+
+    private void setWorkoutNames() {
+        if(!tinyDB.getString("titleOf"+"Workout 1").isEmpty()){addWorkoutOne.setText(tinyDB.getString("titleOf"+"Workout 1"));}
+        if(!tinyDB.getString("titleOf"+"Workout 2").isEmpty()){addWorkoutTwo.setText(tinyDB.getString("titleOf"+"Workout 2")); }
+        if(!tinyDB.getString("titleOf"+"Workout 3").isEmpty()){addWorkoutThree.setText(tinyDB.getString("titleOf"+"Workout 3"));}
     }
 }

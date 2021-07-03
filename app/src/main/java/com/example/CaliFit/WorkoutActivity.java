@@ -3,8 +3,11 @@ package com.example.CaliFit;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -32,38 +35,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     private int tableRowCount;
     private String whichWorkout;
     private Intent receivedIntent;
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //getListsFromTinyDB();
-        //fillLists(workoutActivityPresenter);
-        //setListsToTinyDB();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //getListsFromTinyDB();
-        //fillLists(workoutActivityPresenter);
-        //setListsToTinyDB();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //getListsFromTinyDB();
-        //fillLists(workoutActivityPresenter);
-        //setListsToTinyDB();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        //getListsFromTinyDB();
-        //fillLists(workoutActivityPresenter);
-        //setListsToTinyDB();
-    }
+    private EditText editName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,24 +48,74 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         workoutActivityPresenter  = new WorkoutActivityPresenter(this);
 
         findViewsById();
-
-        Toast.makeText(this, "Wähle eine Kategorie, um Übungen hinzuzufügen!", Toast.LENGTH_LONG).show();
-
+        if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")) {
+            //no toast
+        }else {Toast.makeText(this, "Wähle eine Kategorie, um Übungen hinzuzufügen!", Toast.LENGTH_LONG).show();}
         HomeActivity.getDB().putString("whichWorkout", whichWorkout);
 
         getListsFromTinyDB();
         fillLists(workoutActivityPresenter);
-        //setListsToTinyDB();
+        checkIfBeginnerOrAdvanced();
         setButtonHandlers();
         showWorkoutTables();
     }
 
+    private void checkIfBeginnerOrAdvanced() {
+
+        if(whichWorkout.equals("Anfänger")){
+            addFixedExercise("Liegestütze", "Push");
+            addFixedExercise("Kreuzheben", "Pull");
+            addFixedExercise("Kniebeugen", "Legs");
+            addFixedExercise("Umgekehrte Bauchpressen", "Core");
+        }
+        if(whichWorkout.equals("Fortgeschritten")){
+            addFixedExercise("Diamant Liegestütze", "Push");
+            addFixedExercise("Military Press", "Push");
+            addFixedExercise("Superman", "Pull");
+            addFixedExercise("Vierfüßlerstand", "Pull");
+            addFixedExercise("Kniebeugen mit Sprung", "Legs");
+            addFixedExercise("Bulgarian Split Squats", "Legs");
+            addFixedExercise("Liegendes Beinheben", "Core");
+            addFixedExercise("Bauchpressen", "Core");
+        }
+    }
+
+    private void addFixedExercise(String exeName, String category) {
+        ArrayList<Exercise> list = new ArrayList<>();
+        list = (ArrayList)HomeActivity.getDB().getListObject(category+"ListToShow", Exercise.class);
+        for(Exercise e : list) {
+            if(e.name.equals(exeName)) {
+                switch (category) {
+                    case "Push":
+                        PushList.add(e);
+                        break;
+                    case "Pull":
+                        PullList.add(e);
+                        break;
+                    case "Legs":
+                        LegsList.add(e);
+                        break;
+                    case "Core":
+                        CoreList.add(e);
+                        break;
+                }
+            }
+        }
+    }
+
     private void findViewsById() {
+        editName = findViewById(R.id.editName);
         constraintLayout = findViewById(R.id.constraintLayout);
         tableLayout = findViewById(R.id.tableLayout);
         scrollView = findViewById(R.id.scrollView);
         namePreviewWorkout = (TextView) findViewById(R.id.namePreviewWorkout);
-        namePreviewWorkout.setText(whichWorkout);
+        namePreviewWorkout.setText(HomeActivity.getDB().getString("titleOf"+whichWorkout));
+        tableLayout.setOnClickListener(v -> {
+            editName.clearFocus();
+        });
+        if(HomeActivity.getDB().getString("titleOf"+whichWorkout).equals("")){
+            namePreviewWorkout.setText(whichWorkout);
+        }
         pushButton = (Button) findViewById(R.id.pushButton);
         pullButton = (Button) findViewById(R.id.pullButton);
         legsButton = (Button) findViewById(R.id.legsButton);
@@ -101,18 +123,41 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     }
 
     private void setButtonHandlers() {
-        //push
-        pushButton.setOnClickListener(new View.OnClickListener() {
+        if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")){
+            editName.setEnabled(false);
+        }
+        editName.addTextChangedListener(new TextWatcher() {
+            private String before = whichWorkout;
+            String message;
             @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, "Push");
-                startActivityForResult(intent, 1);
-                setListsToTinyDB();
-                //HomeActivity.getDB().putString("whichWorkout", whichWorkout);
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                before = editName.getText().toString();
+                namePreviewWorkout.setText("");
             }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            public void afterTextChanged(Editable s) {
+                message = editName.getText().toString();
+                if(s.toString().compareTo(String.valueOf(before))!=0){
+                    editName.setText(message);
+                    editName.setSelection(editName.getText().length());
+                }
+                editName.clearFocus();
+                HomeActivity.getDB().putString("titleOf"+whichWorkout, message);
+            }
+        });
+        //push
+        pushButton.setOnClickListener(v -> {
+
+            Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
+            intent.putExtra(Intent.EXTRA_TEXT, "Push");
+            startActivityForResult(intent, 1);
+            setListsToTinyDB();
+            //HomeActivity.getDB().putString("whichWorkout", whichWorkout);
+
         });
         //pull
         pullButton.setOnClickListener(new View.OnClickListener() {
@@ -204,46 +249,54 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     }
 
     private void showWorkout(ArrayList<Exercise> list){
-        for(Exercise e : list){
-                //table row erstellen + params setzen
-                TableRow tableRow = new TableRow(this);
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
-                tableRow.setLayoutParams(lp);
+        for(Exercise e : list) {
+            //table row erstellen + params setzen
+            TableRow tableRow = new TableRow(this);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
+            tableRow.setLayoutParams(lp);
 
-                //text view für name
-                TextView exerciseName =  new TextView(this);
-                exerciseName.setText(e.name);
-                exerciseName.setTextColor(Color.BLACK);
-                exerciseName.setPadding(100,20,100,20);
+            //text view für name
+            TextView exerciseName = new TextView(this);
+            exerciseName.setText(e.name);
+            exerciseName.setTextColor(Color.BLACK);
+            exerciseName.setPadding(100, 20, 100, 20);
 
-                tableRow.addView(exerciseName);
+            tableRow.addView(exerciseName);
 
-                //button um zu removen
-                Button exeRemove = new Button(this);
-                exeRemove.setText("Entfernen");
-                tableRow.addView(exeRemove);
-                exeRemove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        workoutActivityPresenter.getModel().getList(e.category).remove(e);
-                        switch(e.category) {
-                            case Push: PushList.remove(e);
+            //button um zu removen
+            Button exeRemove = new Button(this);
+            if (whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")) {
+                exeRemove.setEnabled(false);
+            }
+            exeRemove.setText("Entfernen");
+            tableRow.addView(exeRemove);
+            exeRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    workoutActivityPresenter.getModel().getList(e.category).remove(e);
+                    switch (e.category) {
+                        case Push:
+                            PushList.remove(e);
                             break;
-                            case Pull: PullList.remove(e);
+                        case Pull:
+                            PullList.remove(e);
                             break;
-                            case Legs: LegsList.remove(e);
+                        case Legs:
+                            LegsList.remove(e);
                             break;
-                            case Core: CoreList.remove(e);
+                        case Core:
+                            CoreList.remove(e);
                             break;
-                        }
-                        tableLayout.removeView(tableRow);
-                        tableLayout.removeView(exeRemove);
-                        setListsToTinyDB();
-                        tableRowCount--;
                     }
-                });
-                tableLayout.addView(tableRow, tableRowCount);
-                tableRowCount++;
+                    tableLayout.removeView(tableRow);
+                    tableLayout.removeView(exeRemove);
+                    //setListsToTinyDB();
+                    tableRowCount--;
+                }
+            });
+
+            tableLayout.addView(tableRow, tableRowCount);
+            tableRowCount++;
 
         }
     }
@@ -251,7 +304,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     private void showTitle(Exercise.Category cat) {
 
         TextView header = new TextView(this);
-        header.setText(cat + " Exercises:");
+        header.setText(cat + " Übungen:");
         header.setTextColor(Color.BLACK);
         header.setPadding(50, 20, 20, 20);
         tableLayout.addView(header, tableRowCount);

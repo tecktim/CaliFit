@@ -100,7 +100,11 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             tableRow1.addView(exerciseName);
 
             //button
+
             Button button = new Button(this);
+            if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")){
+                button.setEnabled(false);
+            }
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -180,7 +184,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         toGive.putExtra("Exercises", exercises);
         setResult(RESULT_OK, toGive);
         if(exercises.size() > 0){
-            showAToast("Übungen erfolgreich zu " + screenCat + " hinzugefügt!", 1);
+            showAToast("Übungen erfolgreich zu " + screenCat + " hinzugefügt!", 0);
             }
         super.finish();
     }
