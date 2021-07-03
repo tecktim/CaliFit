@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,21 +17,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 
 public class ExerciseActivity extends AppCompatActivity implements ExerciseActivityPresenter.ViewInterface {
     ArrayList<Exercise> exercises = new ArrayList<>();
     ArrayList<Exercise> exercisesToShow = new ArrayList<>();
+    ArrayList<Exercise> exercisesToCheck = new ArrayList<>();
 
-    private TinyDB tinyDB;
-    private DatabaseReference ref;
     private String screenCat;
     private TableLayout tableLayout;
     private ScrollView scrollView;
@@ -40,88 +32,53 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     private ConstraintLayout constraintLayout;
     private static Toast mToast;
     private String whichWorkout;
-    private ArrayList<Exercise> toCheck;
 
     ExerciseActivityPresenter exerciseActivityPresenter;
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
 
-    }
 
     @Override
     protected void onRestart() {
         super.onRestart();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
-
         Intent receivedIntent = getIntent();
         screenCat = receivedIntent.getStringExtra(receivedIntent.EXTRA_TEXT);
-
         exerciseActivityPresenter = new ExerciseActivityPresenter(this);
+        findViewsById();
 
+        whichWorkout = HomeActivity.getDB().getString("whichWorkout");
+        exercisesToShow = (ArrayList)HomeActivity.getDB().getListObject(screenCat+"ListToShow", Exercise.class);
+        exercisesToCheck = (ArrayList)HomeActivity.getDB().getListObject(screenCat+"Exercises"+whichWorkout, Exercise.class);
+
+        if(exercisesToCheck.size() > 0) {
+            exercisesToCheck.get(0).printName();
+        }
+        showTable();
+
+    }
+
+    private void findViewsById() {
         //Set the top name TextView to push/pull/legs/core
         namePreviewExercise = (TextView) findViewById(R.id.namePreviewExercise);
         namePreviewExercise.setText(screenCat + " Übungen");
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        ref = database.getReference(screenCat);
         tableLayout = (TableLayout) findViewById(R.id.tableLayout);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
-
-        System.out.println(ref);
-
-        tinyDB= WorkoutActivity.getDB();
-        whichWorkout = tinyDB.getString("whichWorkout");
-        toCheck = (ArrayList)tinyDB.getListObject(screenCat+"Exercises"+whichWorkout, Exercise.class);
-
-
-
-
-
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for(DataSnapshot s : snapshot.getChildren()){
-                    Exercise e = new Exercise();
-                    String name = s.child("dbName").getValue(String.class);
-                    String description = s.child("dbDescription").getValue(String.class);
-                    String linkToVideo = s.child("dbLinkToVideo").getValue(String.class);
-                    e.setCategory(setCategory());
-                    e.setName(name);
-                    e.setDescription(description);
-                    e.setLinkToVideo(linkToVideo);
-                    exercisesToShow.add(e);
-                }
-                for(Exercise e: exercisesToShow){
-                    for(Exercise toCheck : toCheck){
-                        if(e.name.equals(toCheck.name)){
-                            e.added = true;
-                            Log.d("#########", "WTF IM SETTING IT TO TRUE SHEEESH, ITS A " + e.name);
-                        }
-                    }
-                }
-                showTable();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.w("##################", "failed to read value", error.toException());
-            }
-        });
-
-
     }
 
     public void showTable() {
@@ -147,23 +104,27 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(e.added) {
-                        showAToast("Diese Übung ist bereits in deinem Workout!", 0);
-                        }
-                        else{
-                            if(exercises.size() >= 3 || toCheck.size() >= 3){
-                                showAToast("Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", 0);
-                            }else {
-                                if(exercises.contains(e)){
-                                    showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
-                                }else {
-                                    exercises.add(e);
-                                    showAToast(e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", 0);
-                                }
-                            }
-                    }
 
+                    if (exercises.size() >= 3) {
+                        showAToast("Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", 0);
+                    } else {
+                        if (exercises.contains(e)) {
+                            showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
+                        } else {
+                            exercises.add(e);
+                            showAToast(e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", 0);
+                        }
+                        for (Exercise eToCheck : exercisesToCheck) {
+                            for (Exercise e : exercises) {
+                                if (e.name.equals(eToCheck.name)) {
+                                    showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
+                                    exercises.remove(e);
+                                } else continue;
+                            }
+                        }
+                    }
                 }
+
             });
             button.setPadding(2,2,2,2);
             button.setText("Add");
@@ -213,25 +174,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         setContentView(constraintLayout);
     }
 
-    private Exercise.Category setCategory() {
-        Exercise.Category exerciseCategory = null;
-        switch (screenCat) {
-            case "Push":
-                exerciseCategory = Exercise.Category.Push;
-                break;
-            case "Pull":
-                exerciseCategory = Exercise.Category.Pull;
-                break;
-            case "Legs":
-                exerciseCategory = Exercise.Category.Legs;
-                break;
-            case "Core":
-                exerciseCategory = Exercise.Category.Core;
-                break;
-        }
-        return exerciseCategory;
-    }
-
     @Override
     public void finish() {
         Intent toGive = new Intent();
@@ -239,7 +181,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         setResult(RESULT_OK, toGive);
         if(exercises.size() > 0){
             showAToast("Übungen erfolgreich zu " + screenCat + " hinzugefügt!", 1);
-            //Toast.makeText(this, "Übungen erfolgreich zu " + screenCat + " hinzugefügt!", Toast.LENGTH_LONG).show();
             }
         super.finish();
     }

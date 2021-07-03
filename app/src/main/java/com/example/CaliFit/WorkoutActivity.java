@@ -30,12 +30,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     private ArrayList<Exercise> LegsList;
     private ArrayList<Exercise> CoreList;
     private int tableRowCount;
-    public static TinyDB tinyDB;
     private String whichWorkout;
-
-    public static TinyDB getDB(){
-        return tinyDB;
-    }
+    private Intent receivedIntent;
 
     @Override
     protected void onStop() {
@@ -73,32 +69,35 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
-        Intent receivedIntent = getIntent();
+        receivedIntent = getIntent();
+
+        whichWorkout = (String) receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT);
 
         workoutActivityPresenter  = new WorkoutActivityPresenter(this);
 
-        constraintLayout = findViewById(R.id.constraintLayout);
-        tableLayout = findViewById(R.id.tableLayout);
-        scrollView = findViewById(R.id.scrollView);
-        namePreviewWorkout = (TextView) findViewById(R.id.namePreviewWorkout);
-        whichWorkout = (String) receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT);
-        namePreviewWorkout.setText(whichWorkout);
-        pushButton = (Button) findViewById(R.id.pushButton);
-        pullButton = (Button) findViewById(R.id.pullButton);
-        legsButton = (Button) findViewById(R.id.legsButton);
-        coreButton = (Button) findViewById(R.id.coreButton);
-
+        findViewsById();
 
         Toast.makeText(this, "Wähle eine Kategorie, um Übungen hinzuzufügen!", Toast.LENGTH_LONG).show();
 
-        tinyDB = new TinyDB(this);
+        HomeActivity.getDB().putString("whichWorkout", whichWorkout);
 
-        tinyDB.putString("whichWorkout", whichWorkout);
         getListsFromTinyDB();
         fillLists(workoutActivityPresenter);
         //setListsToTinyDB();
         setButtonHandlers();
         showWorkoutTables();
+    }
+
+    private void findViewsById() {
+        constraintLayout = findViewById(R.id.constraintLayout);
+        tableLayout = findViewById(R.id.tableLayout);
+        scrollView = findViewById(R.id.scrollView);
+        namePreviewWorkout = (TextView) findViewById(R.id.namePreviewWorkout);
+        namePreviewWorkout.setText(whichWorkout);
+        pushButton = (Button) findViewById(R.id.pushButton);
+        pullButton = (Button) findViewById(R.id.pullButton);
+        legsButton = (Button) findViewById(R.id.legsButton);
+        coreButton = (Button) findViewById(R.id.coreButton);
     }
 
     private void setButtonHandlers() {
@@ -110,7 +109,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Push");
                 startActivityForResult(intent, 1);
-                //setListsToTinyDB();
+                setListsToTinyDB();
+                //HomeActivity.getDB().putString("whichWorkout", whichWorkout);
+
             }
         });
         //pull
@@ -121,7 +122,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Pull");
                 startActivityForResult(intent, 2);
-                //setListsToTinyDB();
+                setListsToTinyDB();
+                //HomeActivity.getDB().putString("whichWorkout", whichWorkout);
+
             }
         });
         //legs
@@ -132,7 +135,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Legs");
                 startActivityForResult(intent, 3);
-                //setListsToTinyDB();
+                setListsToTinyDB();
+                //HomeActivity.getDB().putString("whichWorkout", whichWorkout);
+
             }
         });
         //core
@@ -143,7 +148,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 Intent intent = new Intent(WorkoutActivity.this, ExerciseActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, "Core");
                 startActivityForResult(intent, 4);
-                //setListsToTinyDB();
+                setListsToTinyDB();
+                //HomeActivity.getDB().putString("whichWorkout", whichWorkout);
+
             }
         });
     }
@@ -166,28 +173,29 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                     for (Exercise exercise : pushToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
-                    tinyDB.putListObject("PushExercises"+whichWorkout, pushToAdd);
+                    HomeActivity.getDB().putListObject("PushExercises"+whichWorkout, pushToAdd);
                     break;
                 case 2:
                     ArrayList<Exercise> pullToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     for (Exercise exercise : pullToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
-                    tinyDB.putListObject("PullExercises"+whichWorkout, pullToAdd);
+                    HomeActivity.getDB().putListObject("PullExercises"+whichWorkout, pullToAdd);
                     break;
                 case 3:
                     ArrayList<Exercise> legsToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     for (Exercise exercise : legsToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
-                    tinyDB.putListObject("LegsExercises"+whichWorkout, legsToAdd);
+                    HomeActivity.getDB().putListObject("LegsExercises"+whichWorkout, legsToAdd);
+
                     break;
                 case 4:
                     ArrayList<Exercise> coreToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     for (Exercise exercise : coreToAdd) {
                         workoutActivityPresenter.getModel().addListItem(exercise);
                     }
-                    tinyDB.putListObject("CoreExercises"+whichWorkout, coreToAdd);
+                    HomeActivity.getDB().putListObject("CoreExercises"+whichWorkout, coreToAdd);
                     break;
                 default:
                     return;
@@ -279,7 +287,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     public void onRestart(){
         super.onRestart();
 
-
+        whichWorkout = (String) receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT);
         //getListsFromTinyDB();
         fillLists(workoutActivityPresenter);
         //setListsToTinyDB();
@@ -288,17 +296,17 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     }
 
     private void setListsToTinyDB(){
-        tinyDB.putListObject("PushExercises"+whichWorkout, PushList);
-        tinyDB.putListObject("PullExercises"+whichWorkout, PullList);
-        tinyDB.putListObject("LegsExercises"+whichWorkout, LegsList);
-        tinyDB.putListObject("CoreExercises"+whichWorkout, CoreList);
+        HomeActivity.getDB().putListObject("PushExercises"+whichWorkout, PushList);
+        HomeActivity.getDB().putListObject("PullExercises"+whichWorkout, PullList);
+        HomeActivity.getDB().putListObject("LegsExercises"+whichWorkout, LegsList);
+        HomeActivity.getDB().putListObject("CoreExercises"+whichWorkout, CoreList);
     }
 
-    public void getListsFromTinyDB(){
-        workoutActivityPresenter.setPushList((ArrayList)tinyDB.getListObject("PushExercises"+whichWorkout, Exercise.class));
-        workoutActivityPresenter.setPullList((ArrayList) tinyDB.getListObject("PullExercises"+whichWorkout, Exercise.class));
-        workoutActivityPresenter.setLegsList((ArrayList)tinyDB.getListObject("LegsExercises"+whichWorkout, Exercise.class));
-        workoutActivityPresenter.setCoreList((ArrayList)tinyDB.getListObject("CoreExercises"+whichWorkout, Exercise.class));
+    private void getListsFromTinyDB(){
+        workoutActivityPresenter.setPushList((ArrayList)HomeActivity.getDB().getListObject("PushExercises"+whichWorkout, Exercise.class));
+        workoutActivityPresenter.setPullList((ArrayList) HomeActivity.getDB().getListObject("PullExercises"+whichWorkout, Exercise.class));
+        workoutActivityPresenter.setLegsList((ArrayList)HomeActivity.getDB().getListObject("LegsExercises"+whichWorkout, Exercise.class));
+        workoutActivityPresenter.setCoreList((ArrayList)HomeActivity.getDB().getListObject("CoreExercises"+whichWorkout, Exercise.class));
     }
 
     private void clearScreen() {
