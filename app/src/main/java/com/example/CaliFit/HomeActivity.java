@@ -1,6 +1,7 @@
 package com.example.CaliFit;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,10 +79,15 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
                     String name = s.child("dbName").getValue(String.class);
                     String description = s.child("dbDescription").getValue(String.class);
                     String linkToVideo = s.child("dbLinkToVideo").getValue(String.class);
+                    String sets = s.child("dbSets").getValue(String.class);
+                    String reps = s.child("dbReps").getValue(String.class);
+
                     e.setCategory(setCategory(dbKey));
                     e.setName(name);
                     e.setDescription(description);
                     e.setLinkToVideo(linkToVideo);
+                    e.setSets(sets);
+                    e.setReps(reps);
                     list.add(e);
                 }
                 tinyDB.putListObject(dbKey, list);
@@ -133,6 +139,9 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
         homeActivityPresenter  = new HomeActivityPresenter(this);
 
         TextView text = (TextView) findViewById(R.id.namePreviewHome);
+        text.setTypeface(Typeface.DEFAULT_BOLD);
+        text.setPadding(8, 40,8,0);
+
 
         addWorkoutOne = findViewById(R.id.addWorkoutOne);
         addWorkoutOne.setOnClickListener(v -> {

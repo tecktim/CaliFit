@@ -2,6 +2,7 @@ package com.example.CaliFit;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -94,6 +95,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             exerciseName.setText(e.name);
             exerciseName.setTextColor(Color.BLACK);
             exerciseName.setTextSize(18);
+            exerciseName.setTypeface(Typeface.DEFAULT_BOLD);
             exerciseName.setPadding(2,2,2,2);
             exerciseName.setWidth(300);
             exerciseName.setHeight(150);
@@ -130,8 +132,10 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 }
 
             });
-            button.setPadding(2,2,2,2);
-            button.setText("Add");
+            button.setText("+");
+            button.setTextSize(18);
+            button.setLayoutParams(new TableRow.LayoutParams(50, TableRow.LayoutParams.WRAP_CONTENT));
+            button.setTypeface(Typeface.DEFAULT_BOLD);
             tableRow1.addView(button);
 
             //description
@@ -157,10 +161,12 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 }
             });
 
+            tableRow1.setPadding(8,30,8,0);
+            tableRow2.setPadding(8, 0, 8, 30);
+
             tableLayout.addView(tableRow1, i);
             tableLayout.addView(tableRow2,i+1);
 
-            tableRow1.setPadding(0,50,0,0);
 
             TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
             tableLayout.setLayoutParams(lp2);
