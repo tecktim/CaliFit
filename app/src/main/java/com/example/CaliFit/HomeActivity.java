@@ -1,6 +1,7 @@
 package com.example.CaliFit;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
     private Button addWorkoutTwo;
     private Button addWorkoutThree;
     private static TinyDB tinyDB;
+    private static Toolbar toolbar;
 
     public static TinyDB getDB(){
         return tinyDB;
@@ -47,7 +49,8 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(Color.parseColor("#656565"));
         setSupportActionBar(toolbar);
         setButtons();
 

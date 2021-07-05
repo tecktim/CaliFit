@@ -26,6 +26,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     ArrayList<Exercise> exercisesToShow = new ArrayList<>();
     ArrayList<Exercise> exercisesToCheck = new ArrayList<>();
 
+
     private String screenCat;
     private TableLayout tableLayout;
     private ScrollView scrollView;
@@ -33,6 +34,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     private ConstraintLayout constraintLayout;
     private static Toast mToast;
     private String whichWorkout;
+    private View thisView;
 
     ExerciseActivityPresenter exerciseActivityPresenter;
 
@@ -61,6 +63,8 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         exerciseActivityPresenter = new ExerciseActivityPresenter(this);
         findViewsById();
 
+        thisView = new View(this);
+
         whichWorkout = HomeActivity.getDB().getString("whichWorkout");
         exercisesToShow = (ArrayList)HomeActivity.getDB().getListObject(screenCat+"ListToShow", Exercise.class);
         exercisesToCheck = (ArrayList)HomeActivity.getDB().getListObject(screenCat+"Exercises"+whichWorkout, Exercise.class);
@@ -87,7 +91,9 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         for (Exercise e: exercisesToShow) {
             TableRow tableRow1 = new TableRow(this);
             TableRow tableRow2 = new TableRow(this);
-
+            TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+            tableLayout.setLayoutParams(lp2);
+            tableRow2.setLayoutParams(lp2);
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
             tableRow1.setLayoutParams(lp);
             //name
@@ -96,13 +102,10 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             exerciseName.setTextColor(Color.BLACK);
             exerciseName.setTextSize(18);
             exerciseName.setTypeface(Typeface.DEFAULT_BOLD);
-            exerciseName.setPadding(2,2,2,2);
-            exerciseName.setWidth(300);
-            exerciseName.setHeight(150);
+            exerciseName.setMaxWidth(300);
             tableRow1.addView(exerciseName);
 
             //button
-
             Button button = new Button(this);
             if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")){
                 button.setEnabled(false);
@@ -133,8 +136,11 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
             });
             button.setText("+");
-            button.setTextSize(18);
-            button.setLayoutParams(new TableRow.LayoutParams(50, TableRow.LayoutParams.WRAP_CONTENT));
+            button.setTextSize(20);
+            button.setBackgroundColor(Color.parseColor("#3DDC84"));
+            TableRow.LayoutParams addButtonLayout = new TableRow.LayoutParams(0, 100);
+            button.setLayoutParams(addButtonLayout);
+            button.setPadding(8, 10, 8, 30);
             button.setTypeface(Typeface.DEFAULT_BOLD);
             tableRow1.addView(button);
 
@@ -142,8 +148,9 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             TextView exerciseDescription = new TextView(this);
             exerciseDescription.setText(e.description);
             exerciseDescription.setTextColor(Color.BLACK);
-            exerciseDescription.setPadding(2,2,2,2);
-            exerciseDescription.setWidth(800);
+            exerciseDescription.setMaxWidth(800);
+
+
             tableRow2.addView(exerciseDescription);
 
             //video
@@ -166,11 +173,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
             tableLayout.addView(tableRow1, i);
             tableLayout.addView(tableRow2,i+1);
-
-
-            TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-            tableLayout.setLayoutParams(lp2);
-            tableRow2.setLayoutParams(lp2);
             i+=2;
         }
 
@@ -183,6 +185,8 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
         setContentView(constraintLayout);
     }
+
+
 
     @Override
     public void finish() {

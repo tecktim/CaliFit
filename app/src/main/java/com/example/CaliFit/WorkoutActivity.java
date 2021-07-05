@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -63,15 +63,45 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     }
 
     private void checkIfBeginnerOrAdvanced() {
-
-        if(PushList.isEmpty() && PullList.isEmpty() &&CoreList.isEmpty() && LegsList.isEmpty()) {
+        if (whichWorkout.equals("Anfänger")) {
+            if(PushList.isEmpty()) {
+                addFixedExercise("Liegestütze", "Push");
+            }
+            if(PullList.isEmpty()) {
+                addFixedExercise("Superman", "Pull");
+            }
+            if(LegsList.isEmpty()) {
+                addFixedExercise("Kniebeugen", "Legs");
+            }
+            if(CoreList.isEmpty()) {
+                addFixedExercise("Umgekehrte Bauchpressen", "Core");
+            }
+        }
+        if (whichWorkout.equals("Fortgeschritten")) {
+            if(PushList.isEmpty()) {
+                addFixedExercise("Diamant Liegestütze", "Push");
+                addFixedExercise("Military Press", "Push");
+            }
+            if(PullList.isEmpty()) {
+                addFixedExercise("Superman", "Pull");
+                addFixedExercise("Vierfüßlerstand", "Pull");
+            }
+            if(LegsList.isEmpty()) {
+                addFixedExercise("Kniebeugen mit Sprung", "Legs");
+                addFixedExercise("Bulgarian Split Squats", "Legs");
+            }
+            if(CoreList.isEmpty()) {
+                addFixedExercise("Liegendes Beinheben", "Core");
+                addFixedExercise("Bauchpressen", "Core");
+            }
+        }
+        /*if(PushList.isEmpty() && PullList.isEmpty() &&CoreList.isEmpty() && LegsList.isEmpty()) {
             if (whichWorkout.equals("Anfänger")) {
                 addFixedExercise("Liegestütze", "Push");
                 addFixedExercise("Superman", "Pull");
                 addFixedExercise("Kniebeugen", "Legs");
                 addFixedExercise("Umgekehrte Bauchpressen", "Core");
-            }
-            if (whichWorkout.equals("Fortgeschritten")) {
+            }else if(whichWorkout.equals("Fortgeschritten")) {
                 addFixedExercise("Diamant Liegestütze", "Push");
                 addFixedExercise("Military Press", "Push");
                 addFixedExercise("Superman", "Pull");
@@ -80,8 +110,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 addFixedExercise("Bulgarian Split Squats", "Legs");
                 addFixedExercise("Liegendes Beinheben", "Core");
                 addFixedExercise("Bauchpressen", "Core");
-            }
-        }
+            }else return;
+        }*/
     }
 
     private void addFixedExercise(String exeName, String category) {
@@ -115,9 +145,6 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         namePreviewWorkout = (TextView) findViewById(R.id.namePreviewWorkout);
         namePreviewWorkout.setText(HomeActivity.getDB().getString("titleOf"+whichWorkout));
         namePreviewWorkout.setTypeface(Typeface.DEFAULT_BOLD);
-        tableLayout.setOnClickListener(v -> {
-            editName.clearFocus();
-        });
         if(HomeActivity.getDB().getString("titleOf"+whichWorkout).equals("")){
             namePreviewWorkout.setText(whichWorkout);
         }
@@ -245,35 +272,35 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             TextView exerciseName = new TextView(this);
             exerciseName.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
             exerciseName.setText(e.name);
+            //exerciseName.setMinWidth(constraintLayout.getWidth());
+           //exerciseName.setWidth(constraintLayout.getWidth()/2);
             exerciseName.setTextColor(Color.BLACK);
-            exerciseName.setPadding(tableLayout.getLeft(), 20, 10, 20);
+            exerciseName.setPadding(tableLayout.getLeft(), 20, 20, 20);
             tableRow.addView(exerciseName);
             //text view sets
             TextView viewSets = new TextView(this);
             viewSets.setText("Sets: "+e.sets);
             viewSets.setTextColor(Color.BLACK);
-            viewSets.setPadding(10, 20, 10, 20);
+            viewSets.setPadding(0, 20, 10, 20);
             tableRow.addView(viewSets);
             //text view reps
             TextView viewReps = new TextView(this);
             viewReps.setText("Reps: "+e.reps);
             viewReps.setTextColor(Color.BLACK);
-            viewReps.setPadding(10, 20, 10, 20);
+            viewReps.setPadding(10, 20, 40, 20);
             tableRow.addView(viewReps);
-
-
-
             //button um zu removen
-            TableRow.LayoutParams removeButtonLayout = new TableRow.LayoutParams(150, TableRow.LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams removeButtonLayout = new TableRow.LayoutParams(100, 100);
             Button exeRemove = new Button(this);
             if (whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")) {
                 exeRemove.setEnabled(false);
             }
             exeRemove.setText("X");
+            exeRemove.setTypeface(Typeface.DEFAULT_BOLD);
             exeRemove.setEllipsize(TextUtils.TruncateAt.START);
             exeRemove.setLayoutParams(removeButtonLayout);
-            exeRemove.setX(tableLayout.getWidth());
             tableRow.addView(exeRemove);
+            exeRemove.setBackgroundColor(Color.parseColor("#e56b6f"));
             exeRemove.setOnClickListener(v -> {
                 workoutActivityPresenter.getModel().getList(e.category).remove(e);
                 switch (e.category) {
@@ -294,7 +321,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 tableLayout.removeView(exeRemove);
                 tableRowCount--;
             });
-
+            tableRow.setPadding(8, 10, 8, 10);
             tableLayout.addView(tableRow, tableRowCount);
             tableRowCount++;
 
@@ -307,8 +334,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         header.setText(cat + " Übungen:");
         header.setTypeface(Typeface.DEFAULT_BOLD);
         header.setTextColor(Color.BLACK);
-        header.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        header.setPadding(300, 20, 300, 20);
+        header.setPadding(350, 20, 350, 20);
+        header.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
         tableLayout.addView(header, tableRowCount);
         tableRowCount++;
     }
