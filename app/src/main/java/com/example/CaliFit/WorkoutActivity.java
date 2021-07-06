@@ -238,6 +238,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                     if (!pushToAdd.isEmpty()) {
                         for (Exercise exercise : pushToAdd) {
                             workoutActivityPresenter.getModel().addListItem(exercise);
+                            if(workoutActivityPresenter.getModel().PushList.size() == 3) {
+                                break;
+                            }
                         }
                         HomeActivity.getDB().putListObject("PushExercises"+whichWorkout, pushToAdd);
                     }
@@ -247,6 +250,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                     if (!pullToAdd.isEmpty()) {
                         for (Exercise exercise : pullToAdd) {
                             workoutActivityPresenter.getModel().addListItem(exercise);
+                            if(workoutActivityPresenter.getModel().PullList.size() == 3) {
+                                break;
+                            }
                         }
                         HomeActivity.getDB().putListObject("PullExercises"+whichWorkout, pullToAdd);
                     }
@@ -256,6 +262,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                     if (!legsToAdd.isEmpty()) {
                         for (Exercise exercise : legsToAdd) {
                             workoutActivityPresenter.getModel().addListItem(exercise);
+                            if(workoutActivityPresenter.getModel().LegsList.size() == 3) {
+                                break;
+                            }
                         }
                         HomeActivity.getDB().putListObject("LegsExercises"+whichWorkout, legsToAdd);
                     }
@@ -265,6 +274,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                     if (!coreToAdd.isEmpty()) {
                         for (Exercise exercise : coreToAdd) {
                             workoutActivityPresenter.getModel().addListItem(exercise);
+                            if(workoutActivityPresenter.getModel().CoreList.size() == 3) {
+                                break;
+                            }
                         }
                         HomeActivity.getDB().putListObject("CoreExercises"+whichWorkout, coreToAdd);
                     }
