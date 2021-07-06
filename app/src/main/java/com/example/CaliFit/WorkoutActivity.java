@@ -95,23 +95,6 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 addFixedExercise("Bauchpressen", "Core");
             }
         }
-        /*if(PushList.isEmpty() && PullList.isEmpty() &&CoreList.isEmpty() && LegsList.isEmpty()) {
-            if (whichWorkout.equals("Anfänger")) {
-                addFixedExercise("Liegestütze", "Push");
-                addFixedExercise("Superman", "Pull");
-                addFixedExercise("Kniebeugen", "Legs");
-                addFixedExercise("Umgekehrte Bauchpressen", "Core");
-            }else if(whichWorkout.equals("Fortgeschritten")) {
-                addFixedExercise("Diamant Liegestütze", "Push");
-                addFixedExercise("Military Press", "Push");
-                addFixedExercise("Superman", "Pull");
-                addFixedExercise("Vierfüßlerstand", "Pull");
-                addFixedExercise("Kniebeugen mit Sprung", "Legs");
-                addFixedExercise("Bulgarian Split Squats", "Legs");
-                addFixedExercise("Liegendes Beinheben", "Core");
-                addFixedExercise("Bauchpressen", "Core");
-            }else return;
-        }*/
     }
 
     private void addFixedExercise(String exeName, String category) {
@@ -292,9 +275,6 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             //button um zu removen
             TableRow.LayoutParams removeButtonLayout = new TableRow.LayoutParams(100, 100);
             Button exeRemove = new Button(this);
-            if (whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")) {
-                exeRemove.setEnabled(false);
-            }
             exeRemove.setText("X");
             exeRemove.setTypeface(Typeface.DEFAULT_BOLD);
             exeRemove.setEllipsize(TextUtils.TruncateAt.START);
@@ -302,6 +282,10 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             tableRow.addView(exeRemove);
             exeRemove.setBackgroundColor(Color.parseColor("#e56b6f"));
             exeRemove.setOnClickListener(v -> {
+                if (whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")) {
+                    Toast.makeText(this, "Dieses Workout lässt sich nicht bearbeiten.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 workoutActivityPresenter.getModel().getList(e.category).remove(e);
                 switch (e.category) {
                     case Push:
