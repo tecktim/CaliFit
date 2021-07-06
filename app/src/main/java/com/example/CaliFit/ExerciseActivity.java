@@ -104,16 +104,21 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                             Toast.makeText(this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
                         } else {
                             exercises.add(e);
-                            Toast.makeText(this, e.name +  " wurde zu "+ screenCat +  " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
-                        }
-                        for (Exercise eToCheck : exercisesToCheck) {
-                            for (Exercise e1 : exercises) {
-                                if (e1.name.equals(eToCheck.name)) {
-                                    Toast.makeText(this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
-                                    exercises.remove(e1);
-                                } else continue;
+                            boolean duplicate = false;
+                            for (Exercise eToCheck : exercisesToCheck) {
+                                for (Exercise e1 : exercises) {
+                                    if (e1.name.equals(eToCheck.name)) {
+                                        Toast.makeText(this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
+                                        exercises.remove(e1);
+                                        duplicate = true;
+                                    } else continue;
+                                }
+                            }
+                            if(!duplicate) {
+                                Toast.makeText(this, e.name +  " wurde zu "+ screenCat +  " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
                             }
                         }
+
                     }
                 }
             });
