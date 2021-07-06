@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -255,30 +254,32 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             TextView exerciseName = new TextView(this);
             exerciseName.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
             exerciseName.setText(e.name);
+            exerciseName.setLayoutParams(lp);
             //exerciseName.setMinWidth(constraintLayout.getWidth());
            //exerciseName.setWidth(constraintLayout.getWidth()/2);
             exerciseName.setTextColor(Color.BLACK);
-            exerciseName.setPadding(tableLayout.getLeft(), 20, 20, 20);
+            exerciseName.setPadding(tableLayout.getLeft(), 50, 20, 20);
             tableRow.addView(exerciseName);
             //text view sets
             TextView viewSets = new TextView(this);
             viewSets.setText("Sets: "+e.sets);
             viewSets.setTextColor(Color.BLACK);
-            viewSets.setPadding(0, 20, 10, 20);
+            viewSets.setLayoutParams(lp);
+            viewSets.setPadding(0, 50, 10, 20);
             tableRow.addView(viewSets);
             //text view reps
             TextView viewReps = new TextView(this);
             viewReps.setText("Reps: "+e.reps);
             viewReps.setTextColor(Color.BLACK);
-            viewReps.setPadding(10, 20, 40, 20);
+            viewReps.setLayoutParams(lp);
+            viewReps.setPadding(10, 50, 40, 20);
             tableRow.addView(viewReps);
             //button um zu removen
-            TableRow.LayoutParams removeButtonLayout = new TableRow.LayoutParams(100, 100);
             Button exeRemove = new Button(this);
             exeRemove.setText("X");
             exeRemove.setTypeface(Typeface.DEFAULT_BOLD);
-            exeRemove.setEllipsize(TextUtils.TruncateAt.START);
-            exeRemove.setLayoutParams(removeButtonLayout);
+
+            exeRemove.setLayoutParams(new TableRow.LayoutParams(100, 150));
             tableRow.addView(exeRemove);
             exeRemove.setBackgroundColor(Color.parseColor("#e56b6f"));
             exeRemove.setOnClickListener(v -> {
@@ -318,7 +319,6 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         header.setText(cat + " Übungen:");
         header.setTypeface(Typeface.DEFAULT_BOLD);
         header.setTextColor(Color.BLACK);
-        header.setPadding(350, 20, 350, 20);
         header.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
         tableLayout.addView(header, tableRowCount);
         tableRowCount++;

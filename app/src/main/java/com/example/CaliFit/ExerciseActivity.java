@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -36,6 +38,8 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     private static Toast mToast;
     private String whichWorkout;
     private View thisView;
+    private int viewWidth;
+    private int viewHeight;
 
     ExerciseActivityPresenter exerciseActivityPresenter;
 
@@ -55,6 +59,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +75,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         exercisesToShow = (ArrayList)HomeActivity.getDB().getListObject(screenCat+"ListToShow", Exercise.class);
         exercisesToCheck = (ArrayList)HomeActivity.getDB().getListObject(screenCat+"Exercises"+whichWorkout, Exercise.class);
 
-        if(exercisesToCheck.size() > 0) {
-            exercisesToCheck.get(0).printName();
-        }
         showTable();
 
     }
@@ -87,13 +89,15 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         constraintLayout = (ConstraintLayout) findViewById(R.id.constraintLayout);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void showTable() {
         int i = 0;
-
+        constraintLayout.removeAllViewsInLayout();
+        scrollView.removeAllViewsInLayout();
         for (Exercise e: exercisesToShow) {
             TableRow tableRow1 = new TableRow(this);
             TableRow tableRow2 = new TableRow(this);
-            TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+            TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
             tableLayout.setLayoutParams(lp2);
             TableRow.LayoutParams tb = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
             tableRow1.setLayoutParams(tb);
@@ -104,46 +108,47 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             exerciseName.setText(e.name);
             exerciseName.setTextColor(Color.BLACK);
             exerciseName.setTextSize(18);
+            exerciseName.setPadding(0, 0, 30, 0);
             exerciseName.setTypeface(Typeface.DEFAULT_BOLD);
-            exerciseName.setMaxWidth(300);
+            exerciseName.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
             tableRow1.addView(exerciseName);
 
             //button
             Button button = new Button(this);
+            button.setBackgroundColor(Color.parseColor("#3DDC84"));
             if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")){
-                button.setEnabled(false);
+                button.setBackgroundColor(Color.parseColor("#BAF2D3"));
             }
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            button.setOnClickListener(v -> {
+                if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")){
+                    showAToast("Dieses Workout lässt sich nicht bearbeiten.", 0);
 
-                    if (exercises.size() >= 3 || exercisesToCheck.size() >= 3) {
-                        showAToast("Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", 0);
+                }else {
+                if (exercises.size() >= 3 || exercisesToCheck.size() >= 3) {
+                    showAToast("Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", 0);
+                } else {
+                    if (exercises.contains(e)) {
+                        showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
                     } else {
-                        if (exercises.contains(e)) {
-                            showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
-                        } else {
-                            exercises.add(e);
-                            showAToast(e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", 0);
-                        }
-                        for (Exercise eToCheck : exercisesToCheck) {
-                            for (Exercise e : exercises) {
-                                if (e.name.equals(eToCheck.name)) {
-                                    showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
-                                    exercises.remove(e);
-                                } else continue;
-                            }
+                        exercises.add(e);
+                        showAToast(e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", 0);
+                    }
+                    for (Exercise eToCheck : exercisesToCheck) {
+                        for (Exercise e1 : exercises) {
+                            if (e1.name.equals(eToCheck.name)) {
+                                showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
+                                exercises.remove(e1);
+                            } else continue;
                         }
                     }
                 }
-
+                }
             });
             button.setText("+");
             button.setTextSize(20);
-            button.setBackgroundColor(Color.parseColor("#3DDC84"));
-            TableRow.LayoutParams addButtonLayout = new TableRow.LayoutParams(0, 100);
+            button.setMaxWidth(100);
+            TableRow.LayoutParams addButtonLayout = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             button.setLayoutParams(addButtonLayout);
-            button.setPadding(8, 10, 8, 30);
             button.setTypeface(Typeface.DEFAULT_BOLD);
             tableRow1.addView(button);
 
@@ -151,24 +156,23 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             TextView exerciseDescription = new TextView(this);
             exerciseDescription.setText(e.description);
             exerciseDescription.setTextColor(Color.BLACK);
-            exerciseDescription.setMaxWidth(800);
-
+            TableRow.LayoutParams exerciseDescriptionLayout = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            exerciseDescription.setLayoutParams(exerciseDescriptionLayout);
+            exerciseDescription.setMaxWidth(750);
 
             tableRow2.addView(exerciseDescription);
 
             //video
             ImageView imageView = new ImageView(this);
-            imageView.setPadding(0,20,0,20);
             Drawable image = getResources().getDrawable(R.drawable.ic_play_80dp);
+            imageView.setPadding(0,50,0, 0);
             imageView.setImageDrawable(image);
+            imageView.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             tableRow2.addView(imageView);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(e.linkToVideo));
-                    startActivity(i);
-                }
+            imageView.setOnClickListener(v -> {
+                Intent i1 = new Intent(Intent.ACTION_VIEW);
+                i1.setData(Uri.parse(e.linkToVideo));
+                startActivity(i1);
             });
 
             tableRow1.setPadding(8,30,8,0);
@@ -179,13 +183,13 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             i+=2;
         }
 
-        constraintLayout.removeAllViewsInLayout();
-        scrollView.removeAllViewsInLayout();
+
 
         constraintLayout.addView(scrollView);
         scrollView.addView(tableLayout);
         constraintLayout.addView(namePreviewExercise);
-        constraintLayout.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+
 
         setContentView(constraintLayout);
     }
