@@ -3,9 +3,12 @@ package com.example.CaliFit;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +18,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -38,6 +42,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     private Intent receivedIntent;
     private EditText editName;
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +61,6 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")) {
             checkIfBeginnerOrAdvanced();
         }else {Toast.makeText(this, "Wähle eine Kategorie, um Übungen hinzuzufügen!", Toast.LENGTH_LONG).show();}
-        //checkIfBeginnerOrAdvanced();
         setButtonHandlers();
         showWorkoutTables();
     }
@@ -136,10 +140,26 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         coreButton = (Button) findViewById(R.id.coreButton);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     private void setButtonHandlers() {
         if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")){
             editName.setEnabled(false);
         }
+        //https://stackoverflow.com/questions/1489852/android-handle-enter-in-an-edittext/1489895
+        editName.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&(
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) || (keyCode == KeyEvent.KEYCODE_SPACE) || (keyCode == KeyEvent.KEYCODE_TAB) || (keyCode == KeyEvent.KEYCODE_COPY)) {
+                    // Perform action on key press
+                   editName.setText("");
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
         editName.addTextChangedListener(new TextWatcher() {
             private String before = whichWorkout;
             String message;
@@ -147,6 +167,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 before = editName.getText().toString();
                 namePreviewWorkout.setText("");
+                if(String.valueOf(s).contains("\n") && String.valueOf(s).contains("\r")){
+                    s = "";
+                }
             }
 
             @Override
@@ -212,31 +235,39 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             switch (requestCode) {
                 case 1:
                     ArrayList<Exercise> pushToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
-                    for (Exercise exercise : pushToAdd) {
-                        workoutActivityPresenter.getModel().addListItem(exercise);
+                    if (!pushToAdd.isEmpty()) {
+                        for (Exercise exercise : pushToAdd) {
+                            workoutActivityPresenter.getModel().addListItem(exercise);
+                        }
+                        HomeActivity.getDB().putListObject("PushExercises"+whichWorkout, pushToAdd);
                     }
-                    HomeActivity.getDB().putListObject("PushExercises"+whichWorkout, pushToAdd);
                     break;
                 case 2:
                     ArrayList<Exercise> pullToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
-                    for (Exercise exercise : pullToAdd) {
-                        workoutActivityPresenter.getModel().addListItem(exercise);
+                    if (!pullToAdd.isEmpty()) {
+                        for (Exercise exercise : pullToAdd) {
+                            workoutActivityPresenter.getModel().addListItem(exercise);
+                        }
+                        HomeActivity.getDB().putListObject("PullExercises"+whichWorkout, pullToAdd);
                     }
-                    HomeActivity.getDB().putListObject("PullExercises"+whichWorkout, pullToAdd);
                     break;
                 case 3:
                     ArrayList<Exercise> legsToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
-                    for (Exercise exercise : legsToAdd) {
-                        workoutActivityPresenter.getModel().addListItem(exercise);
+                    if (!legsToAdd.isEmpty()) {
+                        for (Exercise exercise : legsToAdd) {
+                            workoutActivityPresenter.getModel().addListItem(exercise);
+                        }
+                        HomeActivity.getDB().putListObject("LegsExercises"+whichWorkout, legsToAdd);
                     }
-                    HomeActivity.getDB().putListObject("LegsExercises"+whichWorkout, legsToAdd);
                     break;
                 case 4:
                     ArrayList<Exercise> coreToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
-                    for (Exercise exercise : coreToAdd) {
-                        workoutActivityPresenter.getModel().addListItem(exercise);
+                    if (!coreToAdd.isEmpty()) {
+                        for (Exercise exercise : coreToAdd) {
+                            workoutActivityPresenter.getModel().addListItem(exercise);
+                        }
+                        HomeActivity.getDB().putListObject("CoreExercises"+whichWorkout, coreToAdd);
                     }
-                    HomeActivity.getDB().putListObject("CoreExercises"+whichWorkout, coreToAdd);
                     break;
                 default:
                     return;
@@ -255,8 +286,6 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             exerciseName.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
             exerciseName.setText(e.name);
             exerciseName.setLayoutParams(lp);
-            //exerciseName.setMinWidth(constraintLayout.getWidth());
-           //exerciseName.setWidth(constraintLayout.getWidth()/2);
             exerciseName.setTextColor(Color.BLACK);
             exerciseName.setPadding(tableLayout.getLeft(), 50, 20, 20);
             tableRow.addView(exerciseName);
@@ -285,8 +314,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             exeRemove.setOnClickListener(v -> {
                 if (whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")) {
                     Toast.makeText(this, "Dieses Workout lässt sich nicht bearbeiten.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                }else{
                 workoutActivityPresenter.getModel().getList(e.category).remove(e);
                 switch (e.category) {
                     case Push:
@@ -302,9 +330,10 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                         CoreList.remove(e);
                         break;
                 }
+                setListsToTinyDB();
                 tableLayout.removeView(tableRow);
                 tableLayout.removeView(exeRemove);
-                tableRowCount--;
+                tableRowCount--;}
             });
             tableRow.setPadding(8, 10, 8, 10);
             tableLayout.addView(tableRow, tableRowCount);
@@ -355,11 +384,9 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
 
 
         whichWorkout = (String) receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT);
-        //getListsFromTinyDB();
-        //fillLists(workoutActivityPresenter);
-        //setListsToTinyDB();
         clearScreen();
         showWorkoutTables();
+        setListsToTinyDB();
     }
 
     private void setListsToTinyDB(){

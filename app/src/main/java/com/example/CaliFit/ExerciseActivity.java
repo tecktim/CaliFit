@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,35 +28,13 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     ArrayList<Exercise> exercisesToShow = new ArrayList<>();
     ArrayList<Exercise> exercisesToCheck = new ArrayList<>();
 
-
     private String screenCat;
     private TableLayout tableLayout;
     private ScrollView scrollView;
     private TextView namePreviewExercise;
     private ConstraintLayout constraintLayout;
-    private static Toast mToast;
     private String whichWorkout;
-    private View thisView;
-    private int viewWidth;
-    private int viewHeight;
-
-    ExerciseActivityPresenter exerciseActivityPresenter;
-
-
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-
+    private ExerciseActivityPresenter exerciseActivityPresenter;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -69,14 +46,11 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         exerciseActivityPresenter = new ExerciseActivityPresenter(this);
         findViewsById();
 
-        thisView = new View(this);
-
         whichWorkout = HomeActivity.getDB().getString("whichWorkout");
         exercisesToShow = (ArrayList)HomeActivity.getDB().getListObject(screenCat+"ListToShow", Exercise.class);
         exercisesToCheck = (ArrayList)HomeActivity.getDB().getListObject(screenCat+"Exercises"+whichWorkout, Exercise.class);
 
         showTable();
-
     }
 
     private void findViewsById() {
@@ -121,27 +95,26 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             }
             button.setOnClickListener(v -> {
                 if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")){
-                    showAToast("Dieses Workout lässt sich nicht bearbeiten.", 0);
-
+                    Toast.makeText(this, "Dieses Workout lässt sich nicht bearbeiten.", Toast.LENGTH_SHORT).show();
                 }else {
-                if (exercises.size() >= 3 || exercisesToCheck.size() >= 3) {
-                    showAToast("Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", 0);
-                } else {
-                    if (exercises.contains(e)) {
-                        showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
+                    if (exercises.size() >= 3 || exercisesToCheck.size() >= 3) {
+                        Toast.makeText(this, "Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", Toast.LENGTH_SHORT).show();
                     } else {
-                        exercises.add(e);
-                        showAToast(e.name + " wurde zu " + screenCat + " Übungen hinzugefügt!", 0);
-                    }
-                    for (Exercise eToCheck : exercisesToCheck) {
-                        for (Exercise e1 : exercises) {
-                            if (e1.name.equals(eToCheck.name)) {
-                                showAToast("Diese Übung wurde bereits hinzugefügt!", 0);
-                                exercises.remove(e1);
-                            } else continue;
+                        if (exercises.contains(e)) {
+                            Toast.makeText(this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            exercises.add(e);
+                            Toast.makeText(this, e.name +  " wurde zu "+ screenCat +  " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
+                        }
+                        for (Exercise eToCheck : exercisesToCheck) {
+                            for (Exercise e1 : exercises) {
+                                if (e1.name.equals(eToCheck.name)) {
+                                    Toast.makeText(this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
+                                    exercises.remove(e1);
+                                } else continue;
+                            }
                         }
                     }
-                }
                 }
             });
             button.setText("+");
@@ -159,7 +132,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             TableRow.LayoutParams exerciseDescriptionLayout = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             exerciseDescription.setLayoutParams(exerciseDescriptionLayout);
             exerciseDescription.setMaxWidth(750);
-
             tableRow2.addView(exerciseDescription);
 
             //video
@@ -174,7 +146,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 i1.setData(Uri.parse(e.linkToVideo));
                 startActivity(i1);
             });
-
             tableRow1.setPadding(8,30,8,0);
             tableRow2.setPadding(8, 0, 8, 30);
 
@@ -182,15 +153,9 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             tableLayout.addView(tableRow2,i+1);
             i+=2;
         }
-
-
-
         constraintLayout.addView(scrollView);
         scrollView.addView(tableLayout);
         constraintLayout.addView(namePreviewExercise);
-
-
-
         setContentView(constraintLayout);
     }
 
@@ -199,11 +164,12 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     @Override
     public void finish() {
         Intent toGive = new Intent();
-        toGive.putExtra("Exercises", exercises);
         setResult(RESULT_OK, toGive);
+        HomeActivity.getDB().putListObject(screenCat+"Exercises"+whichWorkout, exercises);
         if(exercises.size() > 0){
-            showAToast("Übungen erfolgreich zu " + screenCat + " hinzugefügt!", 0);
+            Toast.makeText(this, "Übungen erfolgreich zu " + screenCat + " hinzugefügt!", Toast.LENGTH_SHORT).show();
             }
+        toGive.putExtra("Exercises", exercises);
         super.finish();
     }
 
@@ -211,21 +177,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     protected void onPause() {
 
         super.onPause();
-    }
-
-    //https://stackoverflow.com/questions/6925156/how-to-avoid-a-toast-if-theres-one-toast-already-being-shown
-    //Length 0 = short, 1 = long
-    public void showAToast(String message, int length){
-        if (mToast != null) {
-            mToast.cancel();
-        }
-        if(length == 0){
-            mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-        }
-        if(length == 1){
-            mToast = Toast.makeText(this, message, Toast.LENGTH_LONG);
-        }
-        mToast.show();
     }
 
 }
