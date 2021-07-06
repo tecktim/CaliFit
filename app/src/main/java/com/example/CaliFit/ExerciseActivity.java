@@ -97,7 +97,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")){
                     Toast.makeText(this, "Dieses Workout lässt sich nicht bearbeiten.", Toast.LENGTH_SHORT).show();
                 }else {
-                    if (exercises.size() >= 3 || exercisesToCheck.size() >= 3) {
+                    if (exercises.size() >= 3 || exercisesToCheck.size() >= 3 || exercises.size() + exercisesToCheck.size() >= 3) {
                         Toast.makeText(this, "Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", Toast.LENGTH_SHORT).show();
                     } else {
                         if (exercises.contains(e)) {
