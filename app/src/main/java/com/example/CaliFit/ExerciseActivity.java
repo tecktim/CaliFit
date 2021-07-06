@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -88,14 +89,16 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
 
     public void showTable() {
         int i = 0;
+
         for (Exercise e: exercisesToShow) {
             TableRow tableRow1 = new TableRow(this);
             TableRow tableRow2 = new TableRow(this);
-            TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+            TableLayout.LayoutParams lp2 = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
             tableLayout.setLayoutParams(lp2);
-            tableRow2.setLayoutParams(lp2);
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-            tableRow1.setLayoutParams(lp);
+            TableRow.LayoutParams tb = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+            tableRow1.setLayoutParams(tb);
+            tableRow2.setLayoutParams(tb);
+
             //name
             TextView exerciseName = new TextView(this);
             exerciseName.setText(e.name);
@@ -114,7 +117,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                 @Override
                 public void onClick(View v) {
 
-                    if (exercises.size() >= 3) {
+                    if (exercises.size() >= 3 || exercisesToCheck.size() >= 3) {
                         showAToast("Du kannst maximal 3 Übungen zu einer Gruppe hinzufügen!", 0);
                     } else {
                         if (exercises.contains(e)) {
@@ -182,6 +185,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         constraintLayout.addView(scrollView);
         scrollView.addView(tableLayout);
         constraintLayout.addView(namePreviewExercise);
+        constraintLayout.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         setContentView(constraintLayout);
     }

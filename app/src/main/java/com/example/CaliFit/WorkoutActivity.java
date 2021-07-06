@@ -353,6 +353,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     public void onRestart(){
         super.onRestart();
 
+
         whichWorkout = (String) receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT);
         //getListsFromTinyDB();
         //fillLists(workoutActivityPresenter);
