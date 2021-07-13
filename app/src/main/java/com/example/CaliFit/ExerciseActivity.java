@@ -34,6 +34,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private TextView namePreviewExercise;
     private ConstraintLayout constraintLayout;
     private String whichWorkout;
+    private ExerciseActivityPresenter exerciseActivityPresenter;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -102,16 +103,18 @@ public class ExerciseActivity extends AppCompatActivity {
                             Toast.makeText(this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
                         } else {
                             exercises.add(e);
+                            boolean duplicate = false;
                             for (Exercise eToCheck : exercisesToCheck) {
                                 for (Exercise e1 : exercises) {
                                     if (e1.name.equals(eToCheck.name)) {
                                         Toast.makeText(this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
                                         exercises.remove(e1);
-                                    } else {
-                                        Toast.makeText(this, e.name +  " wurde zu "+ screenCat +  " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
-                                        continue;
-                                    }
+                                        duplicate = true;
+                                    } else continue;
                                 }
+                            }
+                            if(!duplicate) {
+                                Toast.makeText(this, e.name +  " wurde zu "+ screenCat +  " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -132,7 +135,7 @@ public class ExerciseActivity extends AppCompatActivity {
             exerciseDescription.setTextColor(Color.BLACK);
             TableRow.LayoutParams exerciseDescriptionLayout = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             exerciseDescription.setLayoutParams(exerciseDescriptionLayout);
-            exerciseDescription.setMaxWidth(600);
+            exerciseDescription.setMaxWidth(750);
             tableRow2.addView(exerciseDescription);
 
             //video
