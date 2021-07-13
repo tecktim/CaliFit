@@ -13,8 +13,12 @@ public class Exercise implements Serializable {
     public String name;
     String description;
     String linkToVideo;
+    String sets;
+    String reps;
     public Category category;
     public boolean draw;
+    public boolean added;
+
 
     public Exercise(String name, String description, String linkToVideo, Category category) {
         this.name = name;
@@ -22,9 +26,18 @@ public class Exercise implements Serializable {
         this.linkToVideo = linkToVideo;
         this.category = category;
         this.draw = false;
+        this.added = false;
     }
 
     public Exercise() {
+    }
+
+    public void setSets(String sets){
+        this.sets = sets;
+    }
+
+    public void setReps(String reps){
+        this.reps = reps;
     }
 
     public void setName(String name) {
