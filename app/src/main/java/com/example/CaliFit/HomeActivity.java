@@ -6,8 +6,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -22,18 +20,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends AppCompatActivity implements HomeActivityPresenter.ViewInterface {
+public class HomeActivity extends AppCompatActivity {
 
     //Dev branch init
-    HomeActivityPresenter homeActivityPresenter;
     private DatabaseReference pushRef;
     private DatabaseReference pullRef;
     private DatabaseReference legsRef;
     private DatabaseReference coreRef;
-    private ArrayList<Exercise> PushList = new ArrayList<>();
-    private ArrayList<Exercise> PullList = new ArrayList<>();
-    private ArrayList<Exercise> LegsList = new ArrayList<>();
-    private ArrayList<Exercise> CoreList = new ArrayList<>();
+    private final ArrayList<Exercise> PushList = new ArrayList<>();
+    private final ArrayList<Exercise> PullList = new ArrayList<>();
+    private final ArrayList<Exercise> LegsList = new ArrayList<>();
+    private final ArrayList<Exercise> CoreList = new ArrayList<>();
     private Button addWorkoutOne;
     private Button addWorkoutTwo;
     private Button addWorkoutThree;
@@ -139,7 +136,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
         Button aboutButton = findViewById(R.id.aboutButton);
 
         aboutButton.setOnClickListener(view -> openAboutIntent());
-        homeActivityPresenter  = new HomeActivityPresenter(this);
 
         TextView text = (TextView) findViewById(R.id.namePreviewHome);
         text.setTypeface(Typeface.DEFAULT_BOLD);
@@ -170,27 +166,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityPrese
         Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://github.com/tecktim/CaliFit"));
         startActivity(browserIntent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

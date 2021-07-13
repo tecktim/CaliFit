@@ -25,9 +25,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import java.util.ArrayList;
 
 //@SuppressWarnings("unchecked")
-public class WorkoutActivity extends AppCompatActivity implements WorkoutActivityPresenter.ViewInterface{
+public class WorkoutActivity extends AppCompatActivity{
 
-    WorkoutActivityPresenter workoutActivityPresenter;
+    Model model;
     private TableLayout tableLayout;
     private ScrollView scrollView;
     private ConstraintLayout constraintLayout;
@@ -49,15 +49,15 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         setContentView(R.layout.activity_workout);
         receivedIntent = getIntent();
 
-        whichWorkout = (String) receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT);
+        whichWorkout = (String) receivedIntent.getCharSequenceExtra(Intent.EXTRA_TEXT);
 
-        workoutActivityPresenter  = new WorkoutActivityPresenter(this);
+        model = new Model();
 
         findViewsById();
         HomeActivity.getDB().putString("whichWorkout", whichWorkout);
 
         getListsFromTinyDB();
-        fillLists(workoutActivityPresenter);
+        fillLists(model);
         if(whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")) {
             checkIfBeginnerOrAdvanced();
         }else {Toast.makeText(this, "Wähle eine Kategorie, um Übungen hinzuzufügen!", Toast.LENGTH_LONG).show();}
@@ -150,7 +150,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&(
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) || (keyCode == KeyEvent.KEYCODE_SPACE) || (keyCode == KeyEvent.KEYCODE_TAB) || (keyCode == KeyEvent.KEYCODE_COPY)) {
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) ||  (keyCode == KeyEvent.KEYCODE_SPACE) || (keyCode == KeyEvent.KEYCODE_TAB) || (keyCode == KeyEvent.KEYCODE_COPY)) {
                     // Perform action on key press
                    editName.setText("");
 
@@ -221,11 +221,11 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         });
     }
 
-    private void fillLists(WorkoutActivityPresenter workoutActivityPresenter) {
-        PushList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Push);
-        PullList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Pull);
-        LegsList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Legs);
-        CoreList = (ArrayList)workoutActivityPresenter.getModel().getList(Exercise.Category.Core);
+    private void fillLists(Model model) {
+        PushList = (ArrayList) model.getModel().getList(Exercise.Category.Push);
+        PullList = (ArrayList) model.getModel().getList(Exercise.Category.Pull);
+        LegsList = (ArrayList) model.getModel().getList(Exercise.Category.Legs);
+        CoreList = (ArrayList) model.getModel().getList(Exercise.Category.Core);
     }
 
     @Override
@@ -237,8 +237,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                     ArrayList<Exercise> pushToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     if (!pushToAdd.isEmpty()) {
                         for (Exercise exercise : pushToAdd) {
-                            workoutActivityPresenter.getModel().addListItem(exercise);
-                            if(workoutActivityPresenter.getModel().PushList.size() == 3) {
+                            model.getModel().addListItem(exercise);
+                            if(model.getModel().PushList.size() == 3) {
                                 break;
                             }
                         }
@@ -249,8 +249,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                     ArrayList<Exercise> pullToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     if (!pullToAdd.isEmpty()) {
                         for (Exercise exercise : pullToAdd) {
-                            workoutActivityPresenter.getModel().addListItem(exercise);
-                            if(workoutActivityPresenter.getModel().PullList.size() == 3) {
+                            model.getModel().addListItem(exercise);
+                            if(model.getModel().PullList.size() == 3) {
                                 break;
                             }
                         }
@@ -261,8 +261,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                     ArrayList<Exercise> legsToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     if (!legsToAdd.isEmpty()) {
                         for (Exercise exercise : legsToAdd) {
-                            workoutActivityPresenter.getModel().addListItem(exercise);
-                            if(workoutActivityPresenter.getModel().LegsList.size() == 3) {
+                            model.getModel().addListItem(exercise);
+                            if(model.getModel().LegsList.size() == 3) {
                                 break;
                             }
                         }
@@ -273,8 +273,8 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                     ArrayList<Exercise> coreToAdd = (ArrayList<Exercise>) toReceive.getSerializableExtra("Exercises");
                     if (!coreToAdd.isEmpty()) {
                         for (Exercise exercise : coreToAdd) {
-                            workoutActivityPresenter.getModel().addListItem(exercise);
-                            if(workoutActivityPresenter.getModel().CoreList.size() == 3) {
+                            model.getModel().addListItem(exercise);
+                            if(model.getModel().CoreList.size() == 3) {
                                 break;
                             }
                         }
@@ -327,7 +327,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
                 if (whichWorkout.equals("Anfänger") || whichWorkout.equals("Fortgeschritten")) {
                     Toast.makeText(this, "Dieses Workout lässt sich nicht bearbeiten.", Toast.LENGTH_SHORT).show();
                 }else{
-                workoutActivityPresenter.getModel().getList(e.category).remove(e);
+                model.getModel().getList(e.category).remove(e);
                 switch (e.category) {
                     case Push:
                         PushList.remove(e);
@@ -395,7 +395,7 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
         super.onRestart();
 
 
-        whichWorkout = (String) receivedIntent.getCharSequenceExtra(receivedIntent.EXTRA_TEXT);
+        whichWorkout = (String) receivedIntent.getCharSequenceExtra(Intent.EXTRA_TEXT);
         clearScreen();
         showWorkoutTables();
         setListsToTinyDB();
@@ -409,10 +409,10 @@ public class WorkoutActivity extends AppCompatActivity implements WorkoutActivit
     }
 
     private void getListsFromTinyDB(){
-        workoutActivityPresenter.setPushList((ArrayList)HomeActivity.getDB().getListObject("PushExercises"+whichWorkout, Exercise.class));
-        workoutActivityPresenter.setPullList((ArrayList) HomeActivity.getDB().getListObject("PullExercises"+whichWorkout, Exercise.class));
-        workoutActivityPresenter.setLegsList((ArrayList)HomeActivity.getDB().getListObject("LegsExercises"+whichWorkout, Exercise.class));
-        workoutActivityPresenter.setCoreList((ArrayList)HomeActivity.getDB().getListObject("CoreExercises"+whichWorkout, Exercise.class));
+        model.setPushList((ArrayList)HomeActivity.getDB().getListObject("PushExercises"+whichWorkout, Exercise.class));
+        model.setPullList((ArrayList) HomeActivity.getDB().getListObject("PullExercises"+whichWorkout, Exercise.class));
+        model.setLegsList((ArrayList)HomeActivity.getDB().getListObject("LegsExercises"+whichWorkout, Exercise.class));
+        model.setCoreList((ArrayList)HomeActivity.getDB().getListObject("CoreExercises"+whichWorkout, Exercise.class));
     }
 
     private void clearScreen() {

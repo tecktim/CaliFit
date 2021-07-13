@@ -23,7 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import java.util.ArrayList;
 
 
-public class ExerciseActivity extends AppCompatActivity implements ExerciseActivityPresenter.ViewInterface {
+public class ExerciseActivity extends AppCompatActivity {
     ArrayList<Exercise> exercises = new ArrayList<>();
     ArrayList<Exercise> exercisesToShow = new ArrayList<>();
     ArrayList<Exercise> exercisesToCheck = new ArrayList<>();
@@ -34,7 +34,6 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
     private TextView namePreviewExercise;
     private ConstraintLayout constraintLayout;
     private String whichWorkout;
-    private ExerciseActivityPresenter exerciseActivityPresenter;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -42,8 +41,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
         Intent receivedIntent = getIntent();
-        screenCat = receivedIntent.getStringExtra(receivedIntent.EXTRA_TEXT);
-        exerciseActivityPresenter = new ExerciseActivityPresenter(this);
+        screenCat = receivedIntent.getStringExtra(Intent.EXTRA_TEXT);
         findViewsById();
 
         whichWorkout = HomeActivity.getDB().getString("whichWorkout");
@@ -104,16 +102,19 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
                             Toast.makeText(this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
                         } else {
                             exercises.add(e);
-                            Toast.makeText(this, e.name +  " wurde zu "+ screenCat +  " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
-                        }
-                        for (Exercise eToCheck : exercisesToCheck) {
-                            for (Exercise e1 : exercises) {
-                                if (e1.name.equals(eToCheck.name)) {
-                                    Toast.makeText(this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
-                                    exercises.remove(e1);
-                                } else continue;
+                            for (Exercise eToCheck : exercisesToCheck) {
+                                for (Exercise e1 : exercises) {
+                                    if (e1.name.equals(eToCheck.name)) {
+                                        Toast.makeText(this, "Diese Übung wurde bereits hinzugefügt!", Toast.LENGTH_SHORT).show();
+                                        exercises.remove(e1);
+                                    } else {
+                                        Toast.makeText(this, e.name +  " wurde zu "+ screenCat +  " Übungen hinzugefügt!", Toast.LENGTH_SHORT).show();
+                                        continue;
+                                    }
+                                }
                             }
                         }
+
                     }
                 }
             });
@@ -131,7 +132,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseActiv
             exerciseDescription.setTextColor(Color.BLACK);
             TableRow.LayoutParams exerciseDescriptionLayout = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             exerciseDescription.setLayoutParams(exerciseDescriptionLayout);
-            exerciseDescription.setMaxWidth(750);
+            exerciseDescription.setMaxWidth(600);
             tableRow2.addView(exerciseDescription);
 
             //video

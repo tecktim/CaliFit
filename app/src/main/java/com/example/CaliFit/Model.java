@@ -4,14 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
-    public Model(){
+    List<Exercise> PushList = new ArrayList<>();
+    List<Exercise> PullList = new ArrayList<>();
+    List<Exercise> LegsList = new ArrayList<>();
+    List<Exercise> CoreList = new ArrayList<>();
 
+    public Model getModel() {
+        return this;
     }
 
-    List<Exercise> PushList = new ArrayList<Exercise>();
-    List<Exercise> PullList = new ArrayList<Exercise>();
-    List<Exercise> LegsList = new ArrayList<Exercise>();
-    List<Exercise> CoreList = new ArrayList<Exercise>();
+    public void setPushList(ArrayList<Exercise> list){
+        this.PushList = list;
+    }
+    public void setPullList(ArrayList<Exercise> list){
+        this.PullList = list;
+    }
+    public void setLegsList(ArrayList<Exercise> list){
+        this.LegsList = list;
+    }
+    public void setCoreList(ArrayList<Exercise> list){
+        this.CoreList = list;
+    }
+
 
     public void addListItem(Exercise exercise) {
 
@@ -29,15 +43,17 @@ public class Model {
     }
 
     public List<Exercise> getList(Exercise.Category category) {
-        switch(category) {
-            case Push: return PushList;
-            case Pull: return PullList;
-            case Legs: return LegsList;
-            case Core: return CoreList;
-            default: return null;
+        switch (category) {
+            case Push:
+                return PushList;
+            case Pull:
+                return PullList;
+            case Legs:
+                return LegsList;
+            case Core:
+                return CoreList;
+            default:
+                return null;
         }
     }
-
-
-
 }
