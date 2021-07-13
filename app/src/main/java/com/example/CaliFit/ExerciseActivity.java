@@ -34,7 +34,6 @@ public class ExerciseActivity extends AppCompatActivity {
     private TextView namePreviewExercise;
     private ConstraintLayout constraintLayout;
     private String whichWorkout;
-    private ExerciseActivityPresenter exerciseActivityPresenter;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
